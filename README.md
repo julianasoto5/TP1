@@ -14,8 +14,6 @@ npm run dev
 Para correr el mock (le envía comandos para el tiempo y el puntaje, es a modo de prueba)
 ```
 cd mock
-npm init -y
-npm install express body-parser
 node mock-micro.js
 ```
 
