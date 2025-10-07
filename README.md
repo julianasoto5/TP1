@@ -1,6 +1,6 @@
 #  Implementación del Mock de Hardware (ESP8266)
 
-Esta rama (`feature/esp8266-mock`) contiene el código del firmware para el microcontrolador ESP8266, el cual actúa como un **servidor HTTP** para simular la funcionalidad de la EDU-CIAA. Su propósito es reemplazar al `mock-micro.js` y permitir al Servidor (`server/index.js`) obtener el estado del juego (`GET /status`) y enviar comandos (`POST /command`).
+El archivo (`esp8266.ino`) es el que se usaría cuando el esp8266 esté conectado a la EDU-CIAA y exista la tarea Comunicación. El archivo (`esp8266-mock.ino`) simular la funcionalidad de la EDU-CIAA para probar la comunicación con la página web sin tener la EDU-CIAA. Su propósito es reemplazar al `mock-micro.js` y permitir al Servidor (`server/index.js`) obtener el estado del juego (`GET /status`) y enviar comandos (`POST /command`).
 
 ---
 
