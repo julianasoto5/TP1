@@ -134,40 +134,13 @@ void checkUart() {
     
     lastUpdate = millis(); // Reinicia el timer de simulación
   }
-  /*while (Serial.available()) {
-    String data = Serial.readStringUntil('\n'); // Lee el mensaje completo
-    data.trim(); // Elimina espacios en blanco y saltos de línea
-
-    if (data.startsWith("STATUS:")) {
-      // Formato: STATUS:<score>,<time_left>,<state>,<level>
-      String payload = data.substring(7); // Quita "STATUS:"
-      
-      int pos1 = payload.indexOf(',');
-      int pos2 = payload.indexOf(',', pos1 + 1);
-      int pos3 = payload.indexOf(',', pos2 + 1);
-
-      if (pos1 > 0 && pos2 > 0 && pos3 > 0) {
-        // Actualizar las variables globales del estado
-        currentState.score     = payload.substring(0, pos1).toInt();
-        currentState.time_left = payload.substring(pos1 + 1, pos2).toInt();
-        currentState.state     = payload.substring(pos2 + 1, pos3);
-        currentState.level     = payload.substring(pos3 + 1).toInt();
-
-        // Limpieza de estado (importante para evitar strings basura)
-        currentState.state.trim();
-        
-        Serial.println("DEBUG: Estado actualizado por EDU-CIAA.");
-      }
-    }
-  }*/
 }
 
 // =======================================================
 // SETUP y LOOP
 // =======================================================
-
 void setup() {
-  Serial.begin(115200); // UART a 115200 bps (asegúrate que la EDU-CIAA use el mismo)
+  Serial.begin(115200); // UART a 115200 bps 
   
   randomSeed(analogRead(0)); // Inicializa la semilla para números aleatorios
   
