@@ -8,7 +8,7 @@
   
 * [Simulación matriz LDR en Tinkercard](https://drive.google.com/file/d/1xssNUtHQLI4xcPLY__oX9u7a8IOefetz/view?usp=sharing)
   
-* [Prueba en EDU-CIAA matriz LDR 2x2](https://drive.google.com/file/d/1xssNUtHQLI4xcPLY__oX9u7a8IOefetz/view?usp=sharing)
+* [Prueba en EDU-CIAA matriz LDR 2x2](https://drive.google.com/file/d/1rJs2KuZaFvBvg2P2s-il2jVErHWXD7qk/view?usp=drivesdk)
   
 ### Motores
 
