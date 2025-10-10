@@ -4,13 +4,12 @@
 
 // --- CONFIGURACIÓN DE RED ---
 // ¡REEMPLAZA TUS CREDENCIALES AQUÍ!
-const char* ssid = "completar_ssid"; 
-const char* password = "completar_password"; 
+const char* ssid = "Fibertel WiFi516 2.4GHz"; 
+const char* password = "416727349"; 
 
 ESP8266WebServer server(5000); 
 
 // --- ESTADO DEL JUEGO (GLOBAL) ---
-// Este estado se actualizará ÚNICAMENTE con los datos recibidos por UART de la EDU-CIAA.
 struct GameState {
   int score = 0;
   int time_left = 60;
@@ -136,6 +135,11 @@ void checkUart() {
 void setup() {
   // Inicializamos el Serial para la comunicación con la EDU-CIAA (TX/RX)
   Serial.begin(115200); 
+
+  delay(500); // Pequeña espera para asegurar que la CIAA esté lista.
+  
+  // --- NUEVA LÍNEA DE PRUEBA DE COMUNICACIÓN ---
+  Serial.println("TEST:UART_OK"); 
   
   // Conexión Wi-Fi
   WiFi.begin(ssid, password);
@@ -145,8 +149,11 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("\nWiFi Conectado.");
-  Serial.print("ESP IP: ");
-  Serial.println(WiFi.localIP());
+  
+  //Envía la IP a la CIAA en el formato 
+  String ipMessage = "IP:";
+  ipMessage += WiFi.localIP().toString();
+  Serial.println(ipMessage); 
 
   // Rutas del Servidor HTTP
   server.on("/status", HTTP_GET, handleStatus);
