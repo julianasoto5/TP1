@@ -133,34 +133,42 @@ void checkUart() {
 // =======================================================
 
 void setup() {
-  // Inicializamos el Serial para la comunicación con la EDU-CIAA (TX/RX)
-  Serial.begin(115200); 
+    // 1. Inicializa Serial para DEBUG (PC) y RECEPCIÓN (pin RX) - SEGURO
+    Serial.begin(115200); 
+    
+    // NO PONEMOS Serial.println() AQUÍ, lo ponemos después del delay.
+    
+    // Conexión Wi-Fi (Proceso largo y estable)
+    WiFi.begin(ssid, password);
+    Serial.print("Conectando a WiFi");
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+    Serial.println("\nWiFi Conectado.");
 
-  delay(500); // Pequeña espera para asegurar que la CIAA esté lista.
-  
-  // --- NUEVA LÍNEA DE PRUEBA DE COMUNICACIÓN ---
-  Serial.println("TEST:UART_OK"); 
-  
-  // Conexión Wi-Fi
-  WiFi.begin(ssid, password);
-  Serial.print("Conectando a WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\nWiFi Conectado.");
-  
-  //Envía la IP a la CIAA en el formato 
-  String ipMessage = "IP:";
-  ipMessage += WiFi.localIP().toString();
-  Serial.println(ipMessage); 
+    // AHORA es el momento SEGURO para inicializar Serial1 (D4) y enviar datos.
+    // 2. Inicializa Serial1 para TRANSMISIÓN (pin D4 a CIAA)
+    Serial1.begin(115200); 
 
-  // Rutas del Servidor HTTP
-  server.on("/status", HTTP_GET, handleStatus);
-  server.on("/command", HTTP_POST, handleCommand);
-  
-  server.begin();
-  Serial.println("Servidor Proxy (ESP8266) iniciado en el puerto 5000.");
+    // Mensaje de prueba (DEBE salir por Serial1)
+    Serial1.println("TEST:UART1_OK"); 
+    Serial.println("NodeMCU: UARTs inicializados. TEST:UART1_OK enviado.");
+
+    delay(2000);
+    
+    // Envía la IP a la CIAA en el formato (USANDO Serial1)
+    String ipMessage = "IP:";
+    ipMessage += WiFi.localIP().toString();
+    Serial1.println(ipMessage); 
+    Serial.println(ipMessage); // Debug a PC
+
+    // Rutas del Servidor HTTP
+    server.on("/status", HTTP_GET, handleStatus);
+    server.on("/command", HTTP_POST, handleCommand);
+    
+    server.begin();
+    Serial.println("Servidor Proxy (ESP8266) iniciado en el puerto 5000.");
 }
 
 void loop() {
