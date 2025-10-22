@@ -18,6 +18,8 @@ typedef enum { NONE, SELECT_LEVEL, START_GAME, DISPARO, TICK_1S, FIN_PARTIDA, GA
 
 typedef enum { STATE_IDLE, STATE_READY, STATE_PLAYING, STATE_GAME_OVER } GameState_t;
 
+typedef enum {NIVEL_FACIL, NIVEL_DIFICIL} level;
+
 /* ---- Estructura del evento ---- */
 typedef struct {
     GameEventType_t tipo;
@@ -26,7 +28,7 @@ typedef struct {
 
 typedef struct {
     GameState_t estado;
-    uint8_t nivel;
+    level nivel;
     uint16_t puntaje;
     uint16_t tiempo_restante;
 } GameContext_t;

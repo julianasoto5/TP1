@@ -45,7 +45,7 @@ extern "C" {
 
 /*=====[Prototypes (declarations) of public functions]=======================*/
 void matrizLDR_Init( void );
-int muestreoLDR(void);
+uint8_t matrizLDR_Scan(uint8_t*);
 uint16_t matrizLDR_Test(int);
 
 

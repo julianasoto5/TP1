@@ -22,14 +22,12 @@ void Juego_Init(void)
 {
 
     // Las colas deben estar creadas en el main
-    timerJuego = xTimerCreate("TimerJuego", pdMS_TO_TICKS(1000), pdTRUE, 0, TimerCallbackJuego);
+    timerJuego = xTimerCreate("TimerJuego", pdMS_TO_TICKS(1000), pdTRUE, 0, TimerCallbackJuego); //deberia ser cada 10ms porque el display va a tener esa resolucion
 
-    contexto.estado = STATE_IDLE;
-    contexto.nivel = 1;
+    contexto.estado = STATE_PLAYING;
+    contexto.nivel = NIVEL_FACIL;
     contexto.puntaje = 0;
     contexto.tiempo_restante = MAX_TIEMPO_PARTIDA;
-
-    //xTaskCreate(Tarea_Juego, "Juego", 512, NULL, 2, NULL);
 }
 
 /* Envío de eventos desde tareas  */
@@ -58,24 +56,24 @@ static uint16_t CalcularPuntaje(uint8_t nivel, uint8_t ring)
 }
 
 /* Máquina de estados  */
-void tarea_Juego(void *pvParameters)
+void tarea_juego(void *pvParameters)
 {
     GameEvent_t evento;
-
+   Juego_Init();
     while(1) {
         
 
             switch (contexto.estado) {
 
             case STATE_IDLE:
-                
+                printf("Esperando evento en xColaJuego - STATE_IDLE\r\n");
                 if (xQueueReceive(xColaJuego, &evento, portMAX_DELAY)) {
                     if (evento.tipo == SELECT_LEVEL) {
                         contexto.nivel = evento.valor;
-                        printf("[JUEGO] Nivel %d seleccionado\n", contexto.nivel);
+                        printf("[JUEGO] Nivel %d seleccionado\r\n", contexto.nivel);
                     }
                     else if (evento.tipo == START_GAME) {
-                        printf("[JUEGO] Iniciando partida...\n");
+                        printf("[JUEGO] Iniciando partida...\r\n");
                         contexto.estado = STATE_READY;
                     }
                 }
@@ -98,19 +96,22 @@ void tarea_Juego(void *pvParameters)
                 break;
 
             case STATE_PLAYING:
+               printf("Esperando evento en xColaJuego- STATE_PLAYING\r\n");
                 if (xQueueReceive(xColaJuego, &evento, portMAX_DELAY)) {
                     if (evento.tipo == DISPARO) {
                         //uint16_t pts = CalcularPuntaje(contexto.nivel, evento.valor);
                         uint16_t pts = GET_SCORE(evento.valor); //no sé si quieren hacer los puntos de acuerdo al nivel
                         contexto.puntaje += pts;
                         //contexto.puntaje += CalcularPuntaje(contexto.nivel, evento.valor);
-                        printf("[JUEGO] Disparo: +%u (Total=%u)\n", pts, contexto.puntaje);
+                        printf("[JUEGO] Disparo: +%u (Total=%u)\r\n", pts, contexto.puntaje);
 
                         
                         GameEvent_t msg = { .tipo = DISPARO, .valor = contexto.puntaje };
                         //Indicar que hubo un acierto a la tarea feedback
+                        
                         xQueueSend(xColaFeedback, &msg, 0);
                         //Enviar puntaje actualizado a la tarea de comunicación
+                        
                         xQueueSend(xColaMovimiento, &msg, 0);
                     }
                     else if (evento.tipo == TICK_1S) {
@@ -132,7 +133,7 @@ void tarea_Juego(void *pvParameters)
                 break;
 
             case STATE_GAME_OVER:
-                printf("[JUEGO] Fin de partida! Puntaje: %u\n", contexto.puntaje);
+                printf("[JUEGO] Fin de partida! Puntaje: %u\r\n", contexto.puntaje);
                 xTimerStop(timerJuego, 0);
 
                 GameEvent_t fin = { .tipo = FIN_PARTIDA, .valor = contexto.puntaje };
@@ -141,11 +142,11 @@ void tarea_Juego(void *pvParameters)
                 xQueueSend(xColaComunicacion, &fin, 0);
                 // Enviar STOP a Tarea Movimiento 
                 xQueueSend(xColaMovimiento, &fin, 0);
-
+                printf("Esperando evento en xColaJuego - STATE_GAME_OVER\r\n");
                 if (xQueueReceive(xColaJuego, &evento, portMAX_DELAY)) {
                     if (evento.tipo == GAME_RESET) {
                         xQueueReset(xColaJuego);
-                        printf("[JUEGO] Reiniciando juego.\n");
+                        printf("[JUEGO] Reiniciando juego.\r\n");
                         contexto.estado = STATE_IDLE;
                     }
                 }

@@ -58,25 +58,22 @@ void matrizLDR_Init( void )
    
 }
 
-int muestreoLDR(){
+uint8_t muestreoLDR(){
    int led;
    uint8_t ledMap[CANT_FILAS * CANT_COLUMNAS] = {LED1, LED2, LED3, LEDB};
-   int ringHit = 0;
+   uint8_t ringHit = 0;
    
    for(int pin=0; pin<CANT_FILAS; pin++){
       gpioWrite(matrizPinesFilas[pin], OFF);
-      
-      // DELAY CRÍTICO: Espera a que los LDR se estabilicen
-    
-      
       for (int i=0; i<CANT_COLUMNAS; i++){
          muestra = adcRead( matrizPinesColumnas[i] );
          led = pin + CANT_FILAS * i;
          
-         if(muestra < umbral){
+         if(muestra > umbral){
             gpioWrite(ledMap[led], ON);
             ringHit = anillos[pin][i]; 
-            
+            //printf("Valor ADC, LDR %d: %u\r\n", led, muestra);
+
             gpioWrite(matrizPinesFilas[pin], ON);
             return ringHit;
          }
@@ -90,6 +87,25 @@ int muestreoLDR(){
       
      
    }  
+   return 0;
+}
+#define INVALID_RING 0
+uint8_t matrizLDR_Scan(uint8_t* ringHit){
+   static uint8_t old_ring, last_valid_ring = INVALID_RING;
+   uint8_t ring = muestreoLDR();
+   if(ring==INVALID_RING){
+         old_ring = INVALID_RING;
+         last_valid_ring = INVALID_RING;
+         return 0;
+   }
+   if(ring == old_ring){
+         if(ring != last_valid_ring){
+               *ringHit = ring;
+            last_valid_ring = ring;
+            return 1;
+         }
+   }
+   old_ring = ring;
    return 0;
 }
 uint16_t matrizLDR_Test(int ldr){

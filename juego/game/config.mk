@@ -11,6 +11,9 @@ USE_SAPI=y
 USE_FREERTOS=y
 FREERTOS_HEAP_TYPE=4
 
+DEFINES+=SAPI_USE_INTERRUPTS
+
 SRC += $(wildcard $(PROGRAM_PATH_AND_NAME)/src/drivers/*.c)
 SRC += $(wildcard $(PROGRAM_PATH_AND_NAME)/src/tareas/*.c)
+
 
