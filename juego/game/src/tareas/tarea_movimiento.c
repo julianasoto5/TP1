@@ -1,37 +1,70 @@
 #include "servo.h"
 #include "userTasks.h"
 #include "tarea_juego.h"
+#include "task.h"
+#include <stdio.h>
+#include <stdbool.h>
 extern QueueHandle_t xColaMovimiento;
-//va a tener dos instancias -- servo1 y servo2 - se podria ejecutar constantemente en vez de periodicamente.
 
 
-void moveNivelDificil(){
-   
+
+/* Funciones de control de motores (Mockup) */
+
+void PonerDianaPosicionInicial(void) {
+    servoWrite(SERVO1_PIN, POS_INICIAL_SERVO1);
+    servoWrite(SERVO2_PIN, POS_INICIAL_SERVO2);
 }
 
-void moveNivelFacil(){
-   
+
+void MoverDianaFacil(void) {
+    printf("[MOVIMIENTO] -> Moviendo diana en patron FACIL.\n");
+    // Lógica
 }
-void* levels[2] = {moveNivelFacil, moveNivelDificil};
-void tarea_movimiento(void *prm){ //prioridad media? 2/3 
-const TickType_t xDelay15ms = pdMS_TO_TICKS( 15 );
-TickType_t xLastWakeTime = xTaskGetTickCount(); 
-GameEvent_t evento;
-   printf("Iniciando servos\r\n");
-   servosInit();
-   for(;;){
-      
-      printf("Esperando evento en xColaMovimiento\r\n");
-      if (xQueueReceive(xColaMovimiento, &evento, portMAX_DELAY)){
-         switch (evento.tipo){
-            case START_GAME: levels[evento.valor]; break; 
-            case DISPARO: break;  //no creo que haya que hacer algo distinto aca
-            case FIN_PARTIDA: break; //se deberia implementar con ISR?
-         }
-      }
-      
-      //moveServo_Random();   
-      vTaskDelayUntil(&xLastWakeTime,xDelay15ms);
+
+
+void MoverDianaDificil(void) {
+    printf("[MOVIMIENTO] -> Moviendo diana en patron DIFICIL/Aleatorio.\n");
+    // Lógica
+}
+
+void* niveles[2] = {MoverDianaFacil, MoverDianaDificil};
+/* Tarea Principal */
+
+void tarea_movimiento(void *pvParameters)
+{
+    GameEvent_t msg;
+    uint8_t nivel = 0;
+    bool moviendo = false;
+
+    // Inicialmente, la tarea espera el mensaje de la Tarea Juego (en READY)
+    while (1) {
+
+
+        if (!moviendo) {
+            printf("[MOVIMIENTO] En espera de evento START (NIVEL).\n");
+            // Esperar un mensaje de incio de la tarea Juego (que en READY enviará el nivel) 
+            if (xQueueReceive(xColaMovimiento, &msg, portMAX_DELAY) == pdPASS) {
+                // El evento de INICIO se envía como START_GAME con el nivel en 'valor'.
+                if (msg.tipo == START_GAME) {
+                    nivel = msg.valor;
+                    moviendo = true;
+                    printf("[MOVIMIENTO] Partida iniciada. Nivel: %u. Iniciando movimiento.\n", nivel);
+                }
+            }
+        }
+        
+        // Bucle principal de movimiento cuando ya inicio el juego.
+        if (moviendo) {
+            // Se comprueba si hay un mensaje STOP (sin bloquear)- La Tarea Juego envía un mensaje 'FIN' para indicar STOP
+            if (xQueueReceive(xColaMovimiento, &msg, 0) == pdPASS) { 
+                if (msg.tipo == FIN_PARTIDA) { 
+                    printf("[MOVIMIENTO] Evento STOP recibido. Deteniendo movimiento.\n");
+                    PonerDianaPosicionInicial(); // Poner la diana en la posición inicial 
+                    moviendo = false;
+                    continue; 
+                }
+            }
+            niveles[msg.valor];
+         } 
    }
 }
-

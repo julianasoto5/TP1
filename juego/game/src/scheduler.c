@@ -16,21 +16,17 @@
 
 /*=====[Definitions of private global variables]=============================*/
 
-const char *pcTextForTask1 = "Tarea Sensores está corriendo\r\n";
-const char *pcTextForTask2 = "Tarea Motor1 está corriendo\r\n";
-
 extern TaskHandle_t xMatrizLDRHandler, xServo1Handler, xJuegoHandler, xComunicationHandler, xFeedbackHandler;
 
 
 /*=====[Main function, program entry point after power on or reset]==========*/
-//taskENABLE_INTERRUPTS(void);
+
 //acá ya se podría mandar a cada tarea los eventos que puede generar?
 int main( void )
 {
    // ----- Setup -----------------------------------
    boardInit();
    uartConfig(UART_USB, 9600);   // Inicializa UART por USB a 9600 baudios
-      matrizLDR_Init();
 
    xColaJuego = xQueueCreate(10, sizeof(GameEvent_t));
    xColaMovimiento = xQueueCreate(4, sizeof(int));
@@ -39,7 +35,7 @@ int main( void )
    
    xTaskCreate( tarea_sensores, "Tarea Sensores", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &xMatrizLDRHandler );
    xTaskCreate( tarea_juego, "Tarea Juego", configMINIMAL_STACK_SIZE*3, NULL, tskIDLE_PRIORITY+2, &xJuegoHandler);
-   xTaskCreate( tarea_movimiento, "Tarea Movimiento motor 1", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2, &xServo1Handler);
+   xTaskCreate( tarea_movimiento, "Tarea Movimiento", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+2, &xServo1Handler);
    //xTaskCreate( tarea_movimiento, "Tarea Movimiento motor 2", configMINIMAL_STACK_SIZE, &(pin2), tskIDLE_PRIORITY+1, &xServo2Handler);
    //xTaskCreate( tarea_comunicacion, "Tarea Comunicacion", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &xComunicationHandler);
    //xTaskCreate( tarea_feedback, "Tarea Feedback", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY+1, &xFeedbackHandler);
