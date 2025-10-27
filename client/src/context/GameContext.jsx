@@ -73,22 +73,51 @@ export function GameProvider({ children }) {
       }
     }, intervalMs);
   }
-
+/*
   async function startGame(level) {
     setSelectedLevel(level);
     await sendCommand('SELECT_LEVEL', level);
     setPhase('running');
     await sendCommand('START', level);
     startPolling();
+  }*/
+
+    // Función para SOLO seleccionar el nivel (comando SELECT_LEVEL)
+  async function selectLevel(level) {
+    setSelectedLevel(level);
+    await sendCommand('SELECT_LEVEL', level);
+  }
+
+  // Función para SOLO iniciar el juego (comando START)
+  async function startGameCommand(level) {
+    const levelToStart = level || selectedLevel; 
+    setPhase('running');
+    await sendCommand('START', levelToStart);
+    startPolling();
   }
 
   async function resetGame() {
     stopPolling();
-    await sendCommand('RESET');
+    // 1. Enviar RESET. Este es el que se atasca.
+  await sendCommand('RESET');
+    //await sendCommand('RESET');
     setSelectedLevel(null);
     setStatus({ score: 0, time_left: 0, state: 'idle' });
     setLastScore(null);
     setPhase('welcome');
+  }
+
+  // Función para terminar el juego (manualmente por el usuario o por error)
+  async function endGameManually() {
+    stopPolling();
+  // 1. Enviar GAME_OVER. Este es el que se atasca.
+    await sendCommand('GAME_OVER'); 
+    // 2. [CLAVE: FLUSH] Enviar el comando nuevamente. Esto forza el buffer del backend/ESP.
+    await sendCommand('RESET');
+    // Guardamos el puntaje actual como lastScore antes de cambiar la fase
+    setLastScore(status.score);
+    // Cambiamos la fase a 'ended' para que se abra el EndFlowModal
+    setPhase('ended');
   }
 
   // saveScore uses selectedLevel; if not set, defaults to 1
@@ -130,8 +159,10 @@ export function GameProvider({ children }) {
         lastScore,
         ranking,
         connected,
-        startGame,
+        startGame: startGameCommand,
+        selectLevel,
         resetGame,
+        endGameManually,
         loadRanking,
         loadBothRankings,
         saveScore,
