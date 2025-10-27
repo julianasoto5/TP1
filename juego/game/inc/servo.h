@@ -1,15 +1,6 @@
-/*=============================================================================
- * Author: JS < >
- * Date: 2025/10/17
- *===========================================================================*/
-
-/*=====[Avoid multiple inclusion - begin]====================================*/
-
-#ifndef __SERVO_H__
-#define __SERVO_H__
-
-/*=====[Inclusions of public function dependencies]==========================*/
-
+#ifndef SERVO_H_
+#define SERVO_H_
+#include "FreeRTOS.h"
 #include <stdint.h>
 #include <stddef.h>
 
@@ -19,34 +10,25 @@
 //movimiento aleatorio
 #include <time.h>
 #include "stdlib.h"
-/*=====[C++ - begin]=========================================================*/
+#include "task.h" // Incluir si se usa vTaskDelay dentro del driver, o si se maneja desde la tarea
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Definiciones de Pines y Ángulos (Ajusta estos valores a tu EDU-CIAA)
+#define ANGULO_MIN_GRADOSX 60
+#define ANGULO_MAX_GRADOSX 120
+#define ANGULO_MIN_GRADOSY 45
+#define ANGULO_MAX_GRADOSY 135
+#define POS_INICIAL_GRADOS 90
 
+// Pines del Hardware
 #define SERVO1_PIN SERVO4 //GPIO8
-#define SERVO2_PIN SERVO8 //GPIO2  
-   
-#define POS_INICIAL_SERVO1 0 //entre 0 y 180
-#define POS_INICIAL_SERVO2 0 //entre 0 y 180
-/*=====[Definition macros of public constants]===============================*/
+#define SERVO2_PIN SERVO8 //GPIO2 
 
-/*=====[Public function-like macros]=========================================*/
+// Funciones de control de la diana
+void Servo_Init(void);
+void Servo_SetPosicionX(uint8_t angle);
+void Servo_SetPosicionY(uint8_t angle);
+void Servo_PonerInicial(void);
+int16_t Servo_GetPosicion(servoMap_t servo); 
+void Servo_MoverGradual(servoMap_t servo, int16_t destino, uint16_t velocidad_ms);
 
-/*=====[Definitions of public data types]====================================*/
-
-/*=====[Prototypes (declarations) of public functions]=======================*/
-
-/*=====[Prototypes (declarations) of public interrupt functions]=============*/
-
-/*=====[C++ - end]===========================================================*/
-void servosInit();
-void moveServo_Random(uint8_t);   
-#ifdef __cplusplus
-}
-#endif
-
-/*=====[Avoid multiple inclusion - end]======================================*/
-
-#endif /* __SERVO_H__ */
+#endif //SERVO_H_

@@ -12,9 +12,10 @@
 #define HIGHEST_SCORE 100
 #define BASE 2
 #define GET_SCORE(anillo) HIGHEST_SCORE*pow(BASE, anillo-CANT_ANILLOS) //debe dividir
+#define MAX_TIEMPO_PARTIDA 30
    
    
-typedef enum { NONE, SELECT_LEVEL, START_GAME, DISPARO, TICK_1S, FIN_PARTIDA, GAME_RESET } GameEventType_t;
+typedef enum { NONE, SELECT_LEVEL, START_GAME, DISPARO, TICK_1S, FIN_PARTIDA, GAME_RESET, GAME_OVER } GameEventType_t;
 
 typedef enum { STATE_IDLE, STATE_READY, STATE_PLAYING, STATE_GAME_OVER } GameState_t;
 
@@ -23,7 +24,7 @@ typedef enum {NIVEL_FACIL, NIVEL_DIFICIL} level;
 /* ---- Estructura del evento ---- */
 typedef struct {
     GameEventType_t tipo;
-    uint8_t valor;   // nivel, anillo, tiempo, puntaje, etc.
+    uint16_t valor;   // nivel, anillo, tiempo, puntaje, etc.
 } GameEvent_t;
 
 typedef struct {

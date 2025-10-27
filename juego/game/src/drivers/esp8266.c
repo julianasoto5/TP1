@@ -1,6 +1,120 @@
-#include "esp8266.h"
+/*#include "esp8266.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h> // Para atoi
+
+// Buffer para almacenar la IP (global, accesible via extern)
+char esp_ip[IP_BUFFER_SIZE + 1] = "0.0.0.0";
 
 
+// INICIALIZACIÓN
+
+void esp8266_Init() {
+    // La configuración de board ya se realiza en main.c
+    uartConfig(ESP_UART_PORT, UART_BAUD_RATE); // UART para el ESP8266
+    uartConfig(UART_USB, UART_BAUD_RATE);     // UART para el debug a la PC
+    
+    // Inicializar la IP como desconocida
+    memset(esp_ip, 0, sizeof(esp_ip));
+    strcpy(esp_ip, "0.0.0.0");
+
+    // Imprimir mensaje de inicialización
+    uartWriteString(UART_USB, "\n\r[DRV-ESP] Driver inicializado. Esperando IP...\n\r");
+}
+
+// =======================================================
+// TRANSMISIÓN (TX) - Llamada por Tarea_Comunicacion
+// =======================================================
+
+void esp8266_SendStatus(uint16_t score, uint16_t time_left, char *state, uint8_t level) {
+    char buffer[100];
+    
+    // El formato requerido por el protocolo serial
+    sprintf(buffer, "STATUS:%d,%d,%s,%d\r\n", 
+            score, 
+            time_left, 
+            state, 
+            level);
+            
+    // Envío a ESP8266 y Debug a la PC
+    uartWriteString(ESP_UART_PORT, buffer);
+    
+    // Debug a la PC (opcional, pero útil)
+    uartWriteString(UART_USB, "[DRV-ESP:TX] "); 
+    uartWriteString(UART_USB, buffer);
+}
+
+// =======================================================
+// RECEPCIÓN (RX) - Llamada por Tarea_Comunicacion
+// =======================================================
+
+GameEvent_t esp8266_CheckCommands(void) {
+    uint8_t receivedByte;
+    // Deben ser static para mantener el estado entre llamadas RTOS (polling)
+    static char commandString[50];
+    static int idx = 0;
+    
+    GameEvent_t event = { .tipo = 0, .valor = 0 };
+
+   // while (uartReadByte(ESP_UART_PORT, &receivedByte)) {
+        
+        // 1. Acumular el byte recibido
+        if (idx < 49 && receivedByte != '\r') {
+            commandString[idx++] = (char)receivedByte;
+        }
+
+        // 2. Si detecta fin de línea, procesar el mensaje
+        if (receivedByte == '\n') {
+            commandString[idx] = '\0'; // Terminar la cadena
+            idx = 0;                   // Resetear el índice
+            
+            // Debug de lo que se recibió
+            uartWriteString(UART_USB, "[DRV-ESP:RX] ");
+            uartWriteString(UART_USB, commandString);
+
+            
+            // --- A. CHEQUEAR COMANDO DE JUEGO (COMMAND:...) ---
+            if (strncmp(commandString, "COMMAND:", 8) == 0) {
+                
+                char *payload = commandString + 8; // Saltar "COMMAND:"
+                char *command = strtok(payload, ":");
+                char *levelStr = strtok(NULL, ":"); // Puede ser NULL
+
+                int level = (levelStr != NULL) ? atoi(levelStr) : 0;
+                
+                if (strcmp(command, "START") == 0) {
+                    event.tipo = START_GAME;
+                    event.valor = (uint8_t)level;
+                } else if (strcmp(command, "RESET") == 0) {
+                    event.tipo = RESET;
+                    event.valor = 0;
+                } else if (strcmp(command, "SELECT_LEVEL") == 0) {
+                    event.tipo = SELECT_LEVEL;
+                    event.valor = (uint8_t)level;
+                }
+                
+            }
+            // --- B. CHEQUEAR DIRECCIÓN IP (IP:...) ---
+            else if (strncmp(commandString, "IP:", 3) == 0) {
+                char *ip_address = commandString + 3; // Saltar "IP:"
+                // Guardar la IP recibida
+                strncpy(esp_ip, ip_address, IP_BUFFER_SIZE);
+                esp_ip[IP_BUFFER_SIZE] = '\0'; // Asegurar terminación
+                uartWriteString(UART_USB, "[DRV-ESP] IP ALMACENADA.\n\r");
+            }
+
+            // 3. Limpiar buffer y salir si se encontró un evento de juego
+            memset(commandString, 0, sizeof(commandString));
+            if (event.tipo != 0) {
+                return event; // Retorna el evento para que la Tarea_Comunicacion lo envíe a Juego.
+            }
+        }
+    }
+    
+    // Si no se leyó nada o solo se recibió parte de una línea, retorna evento nulo.
+    return event; 
+}*/
+/*
 // --- ESTADO DEL JUEGO (Simulación) ---
 
 
@@ -40,9 +154,7 @@ void esp8266_Init() {
 // FUNCIONES DE COMUNICACIÓN
 // =======================================================
 
-/**
- * Envía el estado del juego al ESP8266.
- */
+
 void sendStatusToESP() {
     char buffer[100];
     
@@ -59,9 +171,7 @@ void sendStatusToESP() {
     uartWriteString(UART_USB, buffer);
 }
 
-/**
- * Chequea si el ESP8266 envió un comando (COMMAND:...) o su IP (IP:...)
- */
+
 void checkCommandsFromESP() {
     uint8_t receivedByte;
     static char commandString[50];

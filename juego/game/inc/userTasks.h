@@ -6,6 +6,7 @@
 #include "sapi.h"
 
 #include "tarea_juego.h"
+#include "tarea_movimiento.h"
 
 //Handlers
 TaskHandle_t xMatrizLDRHandler, xServo1Handler, xServo2Handler, xJuegoHandler, xComunicationHandler, xFeedbackHandler;

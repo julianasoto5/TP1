@@ -27,8 +27,8 @@ uint16_t umbral = UMBRAL_DEFAULT;
 
 uint8_t matrizPinesFilas[CANT_FILAS] = {
                                  DIG_PIN_OUT1,
-                                 DIG_PIN_OUT2,
-                                 //DIG_PIN_OUT3,
+                                 //DIG_PIN_OUT2,
+                                 DIG_PIN_OUT3,
                                 // DIG_PIN_OUT4,
                                };
 
