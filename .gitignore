@@ -1,2 +1,6 @@
 node_modules/
 client/node_modules/
+#Ignorar todas las carpetas con la salida
+**/out/**
+*.o
+*.d
