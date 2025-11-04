@@ -1,7 +1,7 @@
 #ifndef ESP8266_H_
 #define ESP8266_H_
 
-#include "sapi.h"        // Incluye las librerías de la CIAA (UART, etc.)
+#include "sapi.h"        // Incluye las librerÃ­as de la CIAA (UART, etc.)
 #include "tarea_juego.h" // Incluye GameEvent_t
 
 // --- CONSTANTES DEL DRIVER ---
@@ -9,11 +9,17 @@
 #define UART_BAUD_RATE  115200
 #define IP_BUFFER_SIZE  16        // Espacio para almacenar la IP
 
-// --- PROTOTIPOS PÚBLICOS ---
+// --- PROTOTIPOS PÃšBLICOS ---
 
-void esp8266_Init(void);
-void esp8266_SendStatus(uint16_t score, uint16_t time_left, char *state, uint8_t level);
-GameEvent_t esp8266_CheckCommands(void);
+// Inicializa el driver en una UART especï¿½fica
+void ESP_Driver_Init(uartMap_t uart, uint32_t baudrate);
+
+// Envï¿½a el paquete de estado al ESP
+void ESP_Driver_SendStatus(uint16_t score, uint8_t time, GameState_t state, uint8_t level);
+
+// Revisa si hay un comando completo y vÃ¡lido en el buffer de la UART.
+// Si lo hay, lo carga en 'event' y retorna TRUE.
+bool_t ESP_Driver_GetCommand(GameEvent_t* event);
 
 // --- VARIABLES GLOBALES DEL DRIVER ---
 extern char esp_ip[IP_BUFFER_SIZE + 1];
