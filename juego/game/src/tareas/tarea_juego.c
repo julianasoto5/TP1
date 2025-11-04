@@ -10,7 +10,7 @@ TimerHandle_t timerJuego;
 
 static GameContext_t contexto;
 
-/* ---- Configuración general ---- */
+/* ---- ConfiguraciÃ³n general ---- */
 
 static void TimerCallbackJuego(TimerHandle_t xTimer);
 
@@ -25,7 +25,7 @@ void Juego_Init(void)
     contexto.tiempo_restante = MAX_TIEMPO_PARTIDA;
 }
 
-/* Envío de eventos desde tareas  */
+/* Envï¿½o de eventos desde tareas  */
 void Juego_EnviarEvento(GameEventType_t tipo, uint8_t val)
 {
     GameEvent_t evento = { .tipo = tipo, .valor = val };
@@ -41,7 +41,7 @@ static void TimerCallbackJuego(TimerHandle_t xTimer)
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-/* Función auxiliar: cálculo de puntaje */
+/* FunciÃ³n auxiliar: cÃ¡lculo de puntaje */
 static uint16_t CalcularPuntaje(uint8_t nivel, uint8_t ring)
 {
     const uint16_t base[5] = {100, 70, 50, 30, 10};
@@ -50,7 +50,7 @@ static uint16_t CalcularPuntaje(uint8_t nivel, uint8_t ring)
     return base[ring] * mult;
 }
 
-/* Máquina de estados  */
+/* MÃ¡quina de estados  */
 void tarea_juego(void *pvParameters)
 {
    GameEvent_t evento;
@@ -80,19 +80,19 @@ void tarea_juego(void *pvParameters)
 
                 xQueueSend(xColaMovimiento, &inicio, 0);
                 xQueueSend(xColaFeedback, &inicio, 0);
-                //xQueueSend(xColaComunicacion, &inicio, 0);
+                xQueueSend(xColaComunicacion, &inicio, 0);
 
                 xTimerStart(timerJuego, 0);
                 contexto.estado = STATE_PLAYING;
                 break;
 
             case STATE_PLAYING:
-               printf("Esperando evento en xColaJuego- STATE_PLAYING\r\n");
+               //printf("Esperando evento en xColaJuego- STATE_PLAYING\r\n");
                if (xQueueReceive(xColaJuego, &evento, portMAX_DELAY)) {
                     if (evento.tipo == DISPARO) {
-                        uint16_t pts = GET_SCORE(evento.valor); //no sé si quieren hacer los puntos de acuerdo al nivel
+                        uint16_t pts = GET_SCORE(evento.valor); //no sÃ© si quieren hacer los puntos de acuerdo al nivel
                         contexto.puntaje += pts;
-                        printf("[JUEGO] Disparo: +%u (Total=%u)\r\n", pts, contexto.puntaje);
+                       // printf("[JUEGO] Disparo: +%u (Total=%u)\r\n", pts, contexto.puntaje);
                         GameEvent_t msg = { .tipo = DISPARO, .valor = contexto.puntaje };                        
                         xQueueSend(xColaFeedback, &msg, 0);                        
                         xQueueSend(xColaComunicacion, &msg, 0);
@@ -101,7 +101,7 @@ void tarea_juego(void *pvParameters)
                         if (contexto.tiempo_restante > 0)
                             contexto.tiempo_restante--;
 
-                        printf("[JUEGO] Tiempo restante: %u \r\n", contexto.tiempo_restante);
+//                        printf("[JUEGO] Tiempo restante: %u \r\n", contexto.tiempo_restante);
 
                         GameEvent_t msg = { .tipo = TICK_1S, .valor = contexto.tiempo_restante };
                         xQueueSend(xColaFeedback, &msg, 0);
@@ -124,9 +124,12 @@ void tarea_juego(void *pvParameters)
                 GameEvent_t fin = { .tipo = FIN_PARTIDA, .valor = contexto.puntaje };
                 xQueueSend(xColaFeedback, &fin, 0);
                 xQueueSend(xColaMovimiento, &fin, 0);
+                xQueueSend(xColaComunicacion, &fin, 0);
+               
                 printf("Esperando evento en xColaJuego - STATE_GAME_OVER \r\n");
                 if (xQueueReceive(xColaJuego, &evento, portMAX_DELAY)) {
                     if (evento.tipo == GAME_RESET) {
+                        xQueueSend(xColaComunicacion, &evento, 0);
                         xQueueReset(xColaJuego);
                         printf("[JUEGO] Reiniciando juego.\r\n");
                         contexto.estado = STATE_IDLE;
