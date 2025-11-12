@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # TP1
 ***
 * Autores:
@@ -49,3 +50,27 @@
 
   ### Comentarios
   * Al ejecutar el archivo scheduler.c tal como está ahora, se generan 3 tareas: tarea_sensores, tarea_juego y tarea_movimiento. La tarea_juego está configurada para empezar en el estado STATE_PLAYING, mientras que la tarea_movimiento todavía está en desarrollo (*ver comentarios en el archivo tarea_movimiento.c*). La tarea_sensores ya está completa y funciona correctamente. Parece que la tarea_juego se queda esperando en los envíos xQueueSend(xColaFeedback, &msg, 0); (linea 112) y xQueueSend(xColaMovimiento, &msg, 0); (linea 115), aunque creo que no debería estar pasando eso. Para testear la integración entre tarea_juego y tarea_sensores, con comentar esas dos líneas es suficiente.
+
+
+## Aplicación
+Para correr el cliente 
+```
+cd client 
+npm install
+npm run dev
+```
+
+Para correr el servidor 
+```
+cd server
+npm install 
+npm run dev
+```
+Para probarlo, en otra terminal 
+```
+curl -X POST -H "Content-Type: application/json" -d '{"score":0,"time_left":5}' http://localhost:5000/update-status
+{"ok":true,"state":{"score":0,"time_left":5,"state":"running","level":1,"device"
+:"mesa1","ts":"2025-10-06T21:03:01.814Z"}}
+```
+
+

@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reglas globales (antes en App.css) */
+@layer base {
+  html, body, #root { height: 100%; }
+  body { @apply bg-slate-50 text-slate-900 font-sans; }
+}
+
+
+
+/* Componentes reutilizables: tarjetas, botones, modal */
+@layer components {
+  .card {
+    @apply bg-white rounded-2xl shadow-lg p-6;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-semibold border border-slate-200;
+  }
+  .btn-primary {
+    @apply bg-blue-600 text-white border-0 hover:bg-blue-700;
+  }
+  .btn-ghost {
+    @apply bg-transparent border-dashed border-slate-300 text-slate-700;
+  }
+  .modal-overlay {
+    @apply fixed inset-0 flex items-center justify-center bg-black/50 z-50;
+  }
+  .modal-window {
+    @apply bg-white rounded-xl shadow-xl w-full max-w-lg p-6;
+  }
+  .welcome-full {
+    @apply min-h-screen flex items-center justify-center relative;
+  }
+  .big-counter {
+    @apply text-[8rem] leading-none font-extrabold select-none;
+  }
+   .modal-overlay {
+    @apply fixed inset-0 flex items-center justify-center bg-black/50 z-50;
+  }
+  .modal-window {
+    @apply bg-white rounded-xl shadow-lg w-full max-w-lg p-6 z-60;
+  }
+  .no-scroll {
+    overflow: hidden;
+  }
+}
+
+/* Utilities extra si necesitás */
+@layer utilities {
+  .no-scroll { overflow: hidden; }
+}
