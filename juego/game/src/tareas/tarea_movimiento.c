@@ -7,23 +7,23 @@
 #include <stdlib.h> // Necesario para rand() y abs()
 #include "tarea_movimiento.h" // Constantes de movimiento
 
-extern QueueHandle_t xColaMovimiento; // Cola para comunicación con Tarea Juego
+extern QueueHandle_t xColaMovimiento; // Cola para comunicaciï¿½n con Tarea Juego
 
-// Variables ESTÁTICAS para mantener el estado entre llamadas
-static int8_t s_dir_x = 1;      // Dirección: 1 (aumenta), -1 (disminuye)
+// Variables ESTï¿½TICAS para mantener el estado entre llamadas
+static int8_t s_dir_x = 1;      // Direcciï¿½n: 1 (aumenta), -1 (disminuye)
 static int8_t s_dir_y = 1;
 static int16_t s_pos_x = POS_INICIAL_GRADOS;
 static int16_t s_pos_y = POS_INICIAL_GRADOS;
 static uint16_t s_retardo_actual_ms = RETARDO_DIFICIL_MS_INICIAL; 
 
 static MovimientoFase_t s_fase_actual = M_ESQUINA_1_SUP_IZQ; 
-
+level nivel;
 /* Funciones de control de motores  */
 
 static void PonerDianaPosicionInicial(void) {
     Servo_PonerInicial();
     
-    // Reinicializar el estado de la lógica para el próximo juego
+    // Reinicializar el estado de la lï¿½gica para el prï¿½ximo juego
     s_pos_x = POS_INICIAL_GRADOS;
     s_pos_y = POS_INICIAL_GRADOS;
     s_dir_x = 1;
@@ -34,10 +34,10 @@ static void PonerDianaPosicionInicial(void) {
 
 
 static void MoverDianaFacil(void) {
-    // 1. Lógica: Mover en un solo eje (X)
+    // 1. Lï¿½gica: Mover en un solo eje (X)
     s_pos_x += PASO_FACIL * s_dir_x;
 
-    // 2. Comprobar límites y cambiar la dirección 
+    // 2. Comprobar lï¿½mites y cambiar la direcciï¿½n 
     if (s_pos_x >= ANGULO_MAX_GRADOSX) {
         s_pos_x = ANGULO_MAX_GRADOSX;
         s_dir_x = -1; 
@@ -55,7 +55,7 @@ static void MoverDianaFacil(void) {
 }
 
 
-// Lógica para mover la diana en un patrón fijo de CUADRADO, progresivamente más rápido.
+// Lï¿½gica para mover la diana en un patrï¿½n fijo de CUADRADO, progresivamente mï¿½s rï¿½pido.
 static void MoverDianaDificil(void) {
     
     int16_t destino_x;
@@ -84,29 +84,29 @@ static void MoverDianaDificil(void) {
             break;
     }
     
-    // 2. Configurar parámetros de movimiento
+    // 2. Configurar parï¿½metros de movimiento
     int16_t actual_x = s_pos_x;
     int16_t actual_y = s_pos_y;
     
-    // Dirección del paso (+1 o -1)
+    // Direcciï¿½n del paso (+1 o -1)
     int16_t dir_x = (destino_x > actual_x) ? 1 : -1;
     int16_t dir_y = (destino_y > actual_y) ? 1 : -1;
     
-    // Retardo para la interpolación (fluidez). Se reduce a medida que el juego acelera.
+    // Retardo para la interpolaciï¿½n (fluidez). Se reduce a medida que el juego acelera.
     uint16_t retardo_paso_ms = s_retardo_actual_ms / PASO_DIVISOR_FLUIDEZ; 
     
-    // Aseguramos el mínimo absoluto para el retardo del paso (2ms)
+    // Aseguramos el mï¿½nimo absoluto para el retardo del paso (2ms)
     if (retardo_paso_ms < MIN_PASO_RETARDO_MS) retardo_paso_ms = MIN_PASO_RETARDO_MS; 
     
-    // 3. Bucle de Movimiento Concurrente (Diagonal fluido con pasos dinámicos)
+    // 3. Bucle de Movimiento Concurrente (Diagonal fluido con pasos dinï¿½micos)
     // El bucle sigue mientras no se haya llegado al destino en ambos ejes
     while (actual_x != destino_x || actual_y != destino_y) {
         
-        // --- Cálculo Dinámico del Paso X ---
+        // --- Cï¿½lculo Dinï¿½mico del Paso X ---
         if (actual_x != destino_x) {
             // Distancia restante a mover en X
             int16_t dist_restante_x = abs(destino_x - actual_x); 
-            // El paso real es el mínimo entre el paso base (1) y la distancia restante
+            // El paso real es el mï¿½nimo entre el paso base (1) y la distancia restante
             int16_t paso_abs_x = (dist_restante_x > BASE_STEP_SIZE) ? BASE_STEP_SIZE : dist_restante_x;
             
             // Mover un paso
@@ -120,11 +120,11 @@ static void MoverDianaDificil(void) {
         }
 
          vTaskDelay(1); // Espera 1 tick
-        // --- Cálculo Dinámico del Paso Y ---
+        // --- Cï¿½lculo Dinï¿½mico del Paso Y ---
         if (actual_y != destino_y) {
             // Distancia restante a mover en Y
             int16_t dist_restante_y = abs(destino_y - actual_y);
-            // El paso real es el mínimo entre el paso base (1) y la distancia restante
+            // El paso real es el mï¿½nimo entre el paso base (1) y la distancia restante
             int16_t paso_abs_y = (dist_restante_y > BASE_STEP_SIZE) ? BASE_STEP_SIZE : dist_restante_y;
             
             // Mover un paso
@@ -141,14 +141,14 @@ static void MoverDianaDificil(void) {
         vTaskDelay(pdMS_TO_TICKS(retardo_paso_ms));
     }
     
-    // 4. Actualizar la posición global
+    // 4. Actualizar la posiciï¿½n global
     s_pos_x = destino_x;
     s_pos_y = destino_y;
     
-    // 5. Transición al siguiente estado
+    // 5. Transiciï¿½n al siguiente estado
     s_fase_actual = (s_fase_actual + 1) % 4; // Hay 4 fases (M_ESQUINA_1 a M_ESQUINA_4)
     
-    // 6. Aumentar la velocidad progresivamente (Aceleración)
+    // 6. Aumentar la velocidad progresivamente (Aceleraciï¿½n)
     if (s_retardo_actual_ms > RETARDO_MIN_DIFICIL_MS) {
         s_retardo_actual_ms -= ACELERACION_REDUCCION_MS; 
     } else {
@@ -161,40 +161,70 @@ void tarea_movimiento(void *pvParameters)
 {
     GameEvent_t msg;
     uint8_t nivel = -1;
-    bool moviendo = false;
+    
     Servo_Init();
     srand((unsigned int)xTaskGetTickCount());
-    
-    // Bucle principal: Espera por la señal de inicio de juego
-    while (1) {
+    uint8_t direccion = 0;uint16_t pos;
+   uint8_t dormir=1;
+      //Servo_SetPosicionY(150);
 
-        if (!moviendo) {
-            printf("[MOVIMIENTO] En espera de evento START (NIVEL).\r\n");
-            // Esperar un mensaje de inicio de la tarea Juego
-            if (xQueueReceive(xColaMovimiento, &msg, portMAX_DELAY) == pdPASS) {
+    // Bucle principal: Espera por la seï¿½al de inicio de juego
+    while (1) {
+        gpioWrite(LED1, OFF);
+       gpioWrite(LED2, OFF);
+       gpioWrite(LED3, OFF);
+       gpioWrite(LEDR, OFF); 
+       gpioWrite(LEDB, ON);
+       
+       if(dormir){
+           if (xQueueReceive(xColaMovimiento, &msg, portMAX_DELAY) == pdPASS) {
                 if (msg.tipo == START_GAME) {
-                    nivel = msg.valor;
-                    moviendo = true;
+                    nivel = (level)msg.valor;
+                    dormir=0;
                     s_retardo_actual_ms = RETARDO_DIFICIL_MS_INICIAL; 
+
                     printf("[MOVIMIENTO] Partida iniciada. Nivel: %u. Iniciando movimiento.\r\n", nivel);
                 }
             }
-        } else {
-            // Se comprueba si hay un mensaje STOP (sin bloquear)
-            if (xQueueReceive(xColaMovimiento, &msg, 0) == pdPASS) { 
-                if (msg.tipo == FIN_PARTIDA) { 
-                    printf("[MOVIMIENTO] Evento STOP recibido. Deteniendo movimiento.\r\n");
+          //nivel = (level)aux;printf("[MOV] ARRIBA");
+          
+       }
+       else {
+       
+          switch(nivel){
+               case NIVEL_FACIL: 
+                  
+                  gpioWrite(LEDR, ON);
+                  
+                  MoverDianaFacil(); 
+                  
+                  break;
+               case NIVEL_DIFICIL: 
+                  gpioWrite(LEDR, ON);
+                  
+               
+                  
+                  MoverDianaDificil(); break;
+                  break;
+               
+             
+               default:  vTaskDelay(pdMS_TO_TICKS(10)); break;
+          }
+       
+         if (xQueueReceive(xColaMovimiento, &msg, 0) == pdPASS) { 
+                if (msg.tipo == FIN_PARTIDA || msg.tipo == GAME_RESET) { 
+                    //printf("[MOVIMIENTO] Evento STOP recibido. Deteniendo movimiento.\r\n");
                     PonerDianaPosicionInicial(); 
-                    moviendo = false;
+                    dormir = 1;
                     nivel = -1;
                     continue; 
                 }
             }
-            if (nivel == 0) { 
-                MoverDianaFacil();
-            } else if (nivel >= 1) { 
-                MoverDianaDificil();
-            }
-        } 
+          
+         vTaskDelay(pdMS_TO_TICKS(100));
+      }
+       
+      
+       
     }
 }

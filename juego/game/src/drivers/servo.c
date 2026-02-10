@@ -72,6 +72,29 @@ void Servo_SetPosicionY(uint8_t angle) {
 }
 
 void Servo_PonerInicial(void) {
-    Servo_SetPosicionX(POS_INICIAL_GRADOS);
-    Servo_SetPosicionY(POS_INICIAL_GRADOS);
+   /*Servo_SetPosicionX(POS_INICIAL_GRADOS);
+   Servo_SetPosicionY(POS_INICIAL_GRADOSY);*/
+   
+   uint8_t pos=Servo_GetPosicion(SERVO1_PIN);
+   
+   while (pos  != POS_INICIAL_GRADOS) {
+
+       if (pos > POS_INICIAL_GRADOS)
+           Servo_SetPosicionX(pos - 2);
+       else
+           Servo_SetPosicionX(pos + 2);
+       pos = Servo_GetPosicion(SERVO1_PIN);
+       vTaskDelay(pdMS_TO_TICKS(20)); // TIEMPO REAL para el servo
+   }
+   pos = Servo_GetPosicion(SERVO2_PIN);
+   while (pos != POS_INICIAL_GRADOSY) {
+
+       if (pos > POS_INICIAL_GRADOSY)
+           Servo_SetPosicionY(pos - 2);
+       else
+           Servo_SetPosicionY(pos + 2);
+       pos = Servo_GetPosicion(SERVO2_PIN);
+       vTaskDelay(pdMS_TO_TICKS(20)); // TIEMPO REAL para el servo
+   }
+
 }

@@ -8,12 +8,16 @@
 static uartMap_t driver_uart;
 static char rx_buffer[RX_BUFFER_SIZE];
 static uint8_t rx_index = 0;
+static char c = '\0';
 
 // ----- Funciones Privadas -----
 
 static bool_t ParseComando(char* buffer, GameEvent_t* event) {
     bool_t send_cmd = true;
-    
+    if (strncmp(buffer, "STATUS:", 7) == 0) {
+       gpioWrite(LED1, ON);
+      return false;
+   }
     if (strncmp(buffer, "COMMAND:START:", 14) == 0) {
         event->tipo = START_GAME;
         event->valor = (uint8_t)atoi(buffer + 14);
@@ -43,12 +47,13 @@ static const char* EstadoJuegoToString(GameState_t estado) {
             return "running";
         case STATE_GAME_OVER:
             return "finished";
+        case STATE_DEBUG:
+            return "debug";
     }
     return "idle";
 }
 
 
-}
 
 // ----- Funciones Públicas -----
 
@@ -66,26 +71,22 @@ void ESP_Driver_SendStatus(uint16_t score, uint8_t time, GameState_t state, uint
     uartWriteString(driver_uart, tx_buffer);
 }
 
-bool_t ESP_Driver_GetCommand(GameEvent_t* event) {
-    uint8_t byte_recibido;
-    bool_t command_received = false;
 
-    while (uartReadByte(driver_uart, &byte_recibido)) {
+bool_t ESP_Driver_GetCommand(char byte_recibido, GameEvent_t* event) {
+   
+
         if (byte_recibido == '\n') {
             rx_buffer[rx_index] = '\0';
             if (rx_index > 0) {
                 // Llama al parser y actualiza el evento si es válido
                 if (ParseComando(rx_buffer, event)) {
-                    command_received = true;
+                    rx_index=0;
+                     return true;
                 }
             }
             rx_index = 0;
             
-            // Si encontramos un comando, salimos del while
-            // para procesarlo en la tarea
-            if(command_received) {
-                break;
-            }
+            
 
         } else if (byte_recibido != '\r') {
             if (rx_index < (RX_BUFFER_SIZE - 1)) {
@@ -94,7 +95,10 @@ bool_t ESP_Driver_GetCommand(GameEvent_t* event) {
                 rx_index = 0; // Overflow
             }
         }
-    }
+        //printf("BUFFER> %s\r\n", rx_buffer);
     
-    return command_received;
+    return false;
 }
+
+
+

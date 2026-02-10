@@ -19,7 +19,7 @@ void ESP_Driver_SendStatus(uint16_t score, uint8_t time, GameState_t state, uint
 
 // Revisa si hay un comando completo y válido en el buffer de la UART.
 // Si lo hay, lo carga en 'event' y retorna TRUE.
-bool_t ESP_Driver_GetCommand(GameEvent_t* event);
+bool_t ESP_Driver_GetCommand(char,GameEvent_t*);
 
 // --- VARIABLES GLOBALES DEL DRIVER ---
 extern char esp_ip[IP_BUFFER_SIZE + 1];

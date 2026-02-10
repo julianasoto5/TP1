@@ -18,7 +18,7 @@ const TOP_N = 5;
 async function callMicro(endpoint, options = {}) {
   if (!MICRO_URL) {
     if (endpoint === '/status') {
-      return { score: Math.floor(Math.random() * 1000), time_left: 60, state: 'idle' };
+      return { score: Math.floor(Math.random() * 1000), time_left: 30, state: 'idle' };
     }
     if (endpoint === '/command') {
       return { ok: true };
@@ -28,6 +28,7 @@ async function callMicro(endpoint, options = {}) {
   const url = `${MICRO_URL}${endpoint}`;
   const res = await fetch(url, options);
   if (!res.ok) throw new Error(`Microcontroller responded ${res.status}`);
+  console.log('[MICRO response]', endpoint, res);
   return res.json();
 }
 
@@ -36,6 +37,7 @@ app.post('/api/command', async (req, res) => {
   const { command, level } = req.body;
   if (!command) return res.status(400).json({ error: 'command required' });
   try {
+    console.log('MICRO COMMAND:', req.body);
     const resp = await callMicro('/command', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,7 +76,7 @@ app.get('/api/ranking', async (req, res) => {
 // Ranking: POST nuevo puntaje (requiere name, score, level)
 app.post('/api/ranking', async (req, res) => {
   const { name, score, level } = req.body;
-  if (!name || typeof score !== 'number' || ![1, 3].includes(Number(level))) {
+  if (!name || (typeof score !== 'number') || ![1, 3].includes(Number(level))) {
     return res.status(400).json({ error: 'requiere name(string), score(number), level(1|3)' });
   }
   try {

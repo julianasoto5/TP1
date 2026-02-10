@@ -8,18 +8,18 @@
 #include <stdint.h>
 #include "math.h"
 
-#define CANT_ANILLOS 2
+#define CANT_ANILLOS 3
 #define HIGHEST_SCORE 100
 #define BASE 2
 #define GET_SCORE(anillo) HIGHEST_SCORE*pow(BASE, anillo-CANT_ANILLOS) //debe dividir
-#define MAX_TIEMPO_PARTIDA 30
+#define MAX_TIEMPO_PARTIDA 3000
    
    
-typedef enum { NONE, SELECT_LEVEL, START_GAME, DISPARO, TICK_1S, FIN_PARTIDA, GAME_RESET, GAME_OVER } GameEventType_t;
+typedef enum { NONE, SELECT_LEVEL, START_GAME, DISPARO, TICK_10MS, TICK_1S, FIN_PARTIDA, GAME_RESET, GAME_OVER } GameEventType_t;
 
-typedef enum { STATE_IDLE, STATE_READY, STATE_PLAYING, STATE_GAME_OVER } GameState_t;
+typedef enum { STATE_IDLE, STATE_READY, STATE_PLAYING, STATE_GAME_OVER, STATE_GAME_RESET, STATE_DEBUG } GameState_t;
 
-typedef enum {NIVEL_FACIL, NIVEL_DIFICIL} level;
+typedef enum {NIVEL_FACIL=1, NIVEL_DIFICIL=3} level;
 
 /* ---- Estructura del evento ---- */
 typedef struct {
@@ -31,7 +31,8 @@ typedef struct {
     GameState_t estado;
     level nivel;
     uint16_t puntaje;
-    uint16_t tiempo_restante;
+    volatile uint16_t tiempo_restante;
+    
 } GameContext_t;
 
 

@@ -19,6 +19,7 @@ export default function EndFlowModal({ open }) {
   if (!open) return null;
 
   async function submit() {
+    console.log("LLAMA");
     if (!name) return;
     setSaving(true);
     const ok = await saveScore(name, lastScore);

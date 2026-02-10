@@ -124,7 +124,7 @@ export function GameProvider({ children }) {
   async function saveScore(name, score) {
     const level = Number(selectedLevel ?? 1);
     try {
-      await axios.post(`${API}/ranking`, { name, score, level });
+      await axios.post(`${API}/ranking`, { name,score: Number(score), level });
       // actualizar ranking del nivel correspondiente
       await loadRanking(level);
       return true;

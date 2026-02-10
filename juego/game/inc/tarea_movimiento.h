@@ -7,11 +7,11 @@
 
 #include <stdint.h>
 #include <stddef.h>
-
+#include "servo.h"
 /*=====[Constantes de la Tarea de Movimiento]================================*/
 
 // Constantes de Movimiento Fácil (Patrón de una dirección)
-#define PASO_FACIL 1           // Cuántos grados mover en cada iteración
+#define PASO_FACIL 3           // Cuántos grados mover en cada iteración
 #define RETARDO_FACIL_MS 20    // Retardo entre pasos para velocidad constante (en ms)
 
 // Constantes de Movimiento Difícil (Patrón Cuadrado/Rombo)

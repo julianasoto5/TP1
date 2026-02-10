@@ -20,13 +20,13 @@
 extern "C" {
 #endif
 
-#define CANT_FILAS 2
-#define CANT_COLUMNAS 2
+#define CANT_FILAS 3
+#define CANT_COLUMNAS 4
 //Definicion de filas digitales
 #define DIG_PIN_OUT1 T_FIL0
 #define DIG_PIN_OUT2 T_FIL1
 #define DIG_PIN_OUT3 T_FIL2
-#define DIG_PIN_OUT4 T_COL0
+#define DIG_PIN_OUT4 T_FIL3
    
 //Definicion de columnas analogicas
 #define AN_PIN_1 CH1
@@ -35,7 +35,7 @@ extern "C" {
 #define AN_PIN_4 CH4
    
    
-#define UMBRAL_DEFAULT 850
+#define UMBRAL_DEFAULT 350
 #define SET_UMBRAL(testDark, testLight) (testDark+testLight)/2 
 
 /*=====[Public function-like macros]=========================================*/

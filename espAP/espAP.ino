@@ -90,6 +90,7 @@ void handleCommand() {
 
 
   } else if (command == "GAME_OVER") {
+     Serial.print("COMMAND:GAME_OVER:");
      Serial1.print("COMMAND:GAME_OVER:"); 
   } 
   else {
@@ -101,8 +102,8 @@ void handleCommand() {
 
 void setup() {
   // UART0 para el Monitor Serial de la PC (Debug)
-  Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial.begin(115200); // RX y TX --> EDU-CIAA
+  Serial1.begin(115200); // solo RX --> DEBUG
   //Serial1.swap();
  // Serial.println("\nMonitor de Debug (UART0) iniciado.");
 
@@ -111,7 +112,7 @@ void setup() {
   //Serial.println("Comunicacion CIAA (UART1) iniciada en D4 (GPIO2).");
   WiFi.softAP("ESP8266-Juego", "clave123"); // SSID y contraseña
   IPAddress ip = WiFi.softAPIP();
-  Serial.println("Access Point IP: " + ip.toString());
+  Serial1.println("Access Point IP: " + ip.toString());
   
 
  /* while (WiFi.status() != WL_CONNECTED) {
@@ -124,7 +125,7 @@ void setup() {
   server.on("/status", HTTP_GET, handleStatus);
   server.on("/command", HTTP_POST, handleCommand);
   server.begin();
-  Serial.println("Servidor HTTP iniciado");
+  Serial1.println("Servidor HTTP iniciado");
 }
 
 void loop() {
@@ -133,11 +134,12 @@ void loop() {
   // Lógica para recibir el estado del juego de la CIAA
   if (Serial.available()) {
     String input = Serial.readStringUntil('\n');
-    
+    //Serial.println(input);
     // El protocolo es STATUS:SCORE,TIME,STATE,LEVEL\r\n
     if (input.startsWith("STATUS:")) {
       String payload = input.substring(7); // Quitar "STATUS:"
-      
+      Serial1.print("Payload: ");
+      Serial1.println(payload);
       int sep1 = payload.indexOf(',');
       int sep2 = payload.indexOf(',', sep1 + 1);
       int sep3 = payload.indexOf(',', sep2 + 1);
