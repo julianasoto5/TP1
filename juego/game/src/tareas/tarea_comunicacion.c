@@ -70,7 +70,7 @@ void tarea_comunicacion(void *pvParameters) {
                  case GAME_RESET:
                     local_state = STATE_IDLE;
                     local_score = 0;
-                    local_time = MAX_TIEMPO_PARTIDA;
+                    local_time = MAX_TIEMPO_PARTIDA/100;
                     break;
             }
             

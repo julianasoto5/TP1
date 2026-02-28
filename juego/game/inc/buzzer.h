@@ -144,6 +144,8 @@ void setBuzzer(uint8_t note, uint8_t duracion);
 
 
 /*
+
+MELODIAS DESCARTADAS
 void soundDisparoExitoso2() {
     for (int i = 0; i < 60; i++) {
         int freq = 1000 + 300 * sin(i * 0.3);

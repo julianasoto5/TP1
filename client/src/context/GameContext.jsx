@@ -55,14 +55,16 @@ export function GameProvider({ children }) {
     }
   }
 
-  function startPolling(intervalMs = 700) {
+  function startPolling(intervalMs = 600) {
     stopPolling();
     pollingRef.current = setInterval(async () => {
+      
       try {
         const res = await axios.get(`${API}/status`);
+        console.log('STATUS DATA:', res.data);
         setStatus(res.data || { score: 0, time_left: 0, state: 'idle' });
         setConnected(true);
-        if ((res.data?.time_left ?? 0) <= 0 || res.data?.state === 'finished') {
+        if ((res.data?.time_left ?? 0) <= 0 || (res.data?.state === 'finished')) {
           stopPolling();
           setLastScore(res.data?.score ?? 0);
           setPhase('ended');
@@ -99,7 +101,7 @@ export function GameProvider({ children }) {
   async function resetGame() {
     stopPolling();
     // 1. Enviar RESET. Este es el que se atasca.
-  await sendCommand('RESET');
+    await sendCommand('RESET');
     //await sendCommand('RESET');
     setSelectedLevel(null);
     setStatus({ score: 0, time_left: 0, state: 'idle' });

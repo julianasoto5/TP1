@@ -95,7 +95,6 @@ bool_t ESP_Driver_GetCommand(char byte_recibido, GameEvent_t* event) {
                 rx_index = 0; // Overflow
             }
         }
-        //printf("BUFFER> %s\r\n", rx_buffer);
     
     return false;
 }

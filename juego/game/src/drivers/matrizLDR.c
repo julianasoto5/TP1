@@ -11,7 +11,8 @@ anillos_alcanzados,
 */
 
 #include "matrizLDR.h"
-
+#include "FreeRTOS.h"
+#include "task.h"
 /*=====[Definition macros of private constants]==============================*/
 
 /*=====[Definitions of extern global variables]==============================*/
@@ -73,18 +74,18 @@ uint8_t muestreoLDR(){
          if(muestra > umbral){
             //gpioWrite(ledMap[led], ON);
             ringHit = anillos[pin][i]; 
-            //printf("Valor ADC, LDR %d - Anillo %d\r\n", led, ringHit);
+            printf("Valor ADC %u, LDR %d - Anillo %d\r\n", muestra, led, ringHit);
 
             gpioWrite(matrizPinesFilas[pin], OFF);
             return ringHit;
          }
          else{
            // gpioWrite(ledMap[led], OFF);
-            //printf("Valor ADC, LDR %d: %u\r\n", led, muestra);
+           // printf("Valor ADC, LDR %d: %u\r\n", led, muestra);
          }
 
       }
-      
+      vTaskDelay(pdMS_TO_TICKS(5));
       gpioWrite(matrizPinesFilas[pin], OFF);
       
      

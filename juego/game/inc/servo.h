@@ -12,7 +12,7 @@
 #include "stdlib.h"
 #include "task.h" // Incluir si se usa vTaskDelay dentro del driver, o si se maneja desde la tarea
 
-// Definiciones de Pines y Ángulos (Ajusta estos valores a tu EDU-CIAA)
+// Definiciones de Pines y Ángulos 
 #define ANGULO_MIN_GRADOSX 80
 #define ANGULO_MAX_GRADOSX 120
 #define ANGULO_MIN_GRADOSY 70

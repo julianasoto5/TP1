@@ -8,8 +8,6 @@
 #include "tarea_juego.h"
 #include "tarea_movimiento.h"
 
-#define NOTIF_START   (1 << 0)
-#define NOTIF_STOP    (1 << 1)
 
 //Handlers
 TaskHandle_t xMatrizLDRHandler, xServoHandler, xJuegoHandler, xComunicationHandler, xFeedbackHandler;

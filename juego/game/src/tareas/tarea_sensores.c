@@ -10,21 +10,14 @@ extern TaskHandle_t xMatrizLDRHandler, xServoHandler, xJuegoHandler, xComunicati
 void tarea_sensores(void * prm){ //prioridad media? 2/3 
    const TickType_t xDelay50ms = pdMS_TO_TICKS( 50 );    
    TickType_t xLastWakeTime = xTaskGetTickCount(); //esto garantiza que se despierte cada 10ms porque sino depende de cuando llame a vTaskDelay
-   UBaseType_t uxPriority = uxTaskPriorityGet( NULL ); //con NULL devuelve la propia
       
    GameEvent_t event;
    event.tipo = DISPARO;//*(GameEvent_t*) prm; //ya precargado con tipo o mandar solo tipo
-/*
-   typedef struct {
-    GameEventType_t tipo;
-    uint8_t valor;   // nivel, anillo, tiempo, puntaje, etc.
-} GameEvent_t;
-*/ 
+
    matrizLDR_Init();
    uint8_t ring;
    int8_t dormir = 1;
    for(;;){
-      
       
       //printf(".");
       if(dormir){

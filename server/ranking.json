@@ -2,20 +2,33 @@
   "rankings": {
     "1": [
       {
-        "name": "prueba",
-        "score": 804,
-        "date": "2025-10-06T16:39:10.037Z"
-      },
-      {
-        "name": "top",
-        "score": 650,
-        "date": "2025-10-06T21:02:40.143Z",
+        "name": "Chanca",
+        "score": 4175,
+        "date": "2026-02-23T15:23:40.393Z",
         "level": 1
       },
       {
-        "name": "fede2",
-        "score": 350,
-        "date": "2025-10-06T19:39:47.446Z",
+        "name": "Gabi",
+        "score": 2900,
+        "date": "2026-02-23T15:21:05.687Z",
+        "level": 1
+      },
+      {
+        "name": "Gabi",
+        "score": 2625,
+        "date": "2026-02-23T15:22:05.094Z",
+        "level": 1
+      },
+      {
+        "name": "Lorenzo",
+        "score": 1875,
+        "date": "2026-02-23T14:57:45.885Z",
+        "level": 1
+      },
+      {
+        "name": "Juli",
+        "score": 1525,
+        "date": "2026-02-10T21:23:42.073Z",
         "level": 1
       }
     ],

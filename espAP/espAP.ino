@@ -71,7 +71,7 @@ void handleCommand() {
   String command = doc["command"] | "";
   int newLevel = doc["level"] | level;
 
-
+  //Serial1.println("Comando: "+ command);
   if (command == "START") {    
     Serial.print("COMMAND:START:");
     Serial.println(newLevel); 

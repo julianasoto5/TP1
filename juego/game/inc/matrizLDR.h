@@ -35,7 +35,7 @@ extern "C" {
 #define AN_PIN_4 CH4
    
    
-#define UMBRAL_DEFAULT 350
+#define UMBRAL_DEFAULT 400
 #define SET_UMBRAL(testDark, testLight) (testDark+testLight)/2 
 
 /*=====[Public function-like macros]=========================================*/

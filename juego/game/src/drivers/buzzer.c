@@ -45,15 +45,11 @@
 #define VOLUME_MAX 255*0.6
 #define LENGTH(x) sizeof(x) / sizeof((x)[0])
 
-#define NO_TUNE Sct_SetDutyCycle(BUZZER_PIN, 0) //chequear porq creo q no me funciono
+#define NO_TUNE Sct_SetDutyCycle(BUZZER_PIN, 0) 
 
 #define T_CORTO 150
 #define T_MEDIO T_CORTO*2
 #define T_LARGO T_CORTO*3 
- 
-typedef void (*FuncionMelodia_t)(void);
-FuncionMelodia_t playMelodia[] = {soundStartGame, soundDisparoExitoso, soundWinner, soundGameOver, soundReset, soundGame};   
-
 
 /*
    
@@ -61,7 +57,6 @@ FuncionMelodia_t playMelodia[] = {soundStartGame, soundDisparoExitoso, soundWinn
 */
 
 
-//INCHEQUEABLES ESTAS NOTAS :D
 
 Nota_t mario_intro[] = {
   {NOTE_E5, T_CORTO}, {NOTE_E5, T_CORTO}, {SILENCE, T_CORTO}, {NOTE_E5, T_CORTO},
@@ -139,7 +134,6 @@ void buzzerSetFrequency(uint32_t freq){
 void buzzerStart(uint8_t freq ){
    buzzerSetFrequency(freq);
    pwmConfig(BUZZER_PIN, PWM_ENABLE_OUTPUT);
-   //buzzerConfig(BUZZER_PIN, PWM_ENABLE, freq);
 }
 
 void buzzerEnd(){
@@ -220,7 +214,5 @@ void soundReset(){
     play(melody_reset, sizeof(melody_reset) / sizeof(melody_reset[0]));
 }
 
-void soundGame(){
 
-}
 
