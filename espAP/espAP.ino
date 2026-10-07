@@ -3,7 +3,6 @@
 #include <ArduinoJson.h>
 #include <stdlib.h>
 
-
 int score = 0;
 int time_left = 0;
 String state = "idle"; 
@@ -26,40 +25,6 @@ void handleStatus() {
   serializeJson(doc, response);
   server.send(200, "application/json", response);
 }
-
-/*
-void handleCommand() {
-  if (server.method() != HTTP_POST) {
-    server.send(405, "text/plain", "Method Not Allowed");
-    return;
-  }
-
-  StaticJsonDocument<200> doc;
-  DeserializationError error = deserializeJson(doc, server.arg("plain"));
-  if (error) {
-    server.send(400, "text/plain", "Bad JSON");
-    return;
-  }
-
-  String command = doc["command"] | "";
-  int newLevel = doc["level"] | level;
-
-  if (command == "START") {
-    state = "running";
-    time_left = 60;
-    score = 0;
-    level = newLevel;
-  } else if (command == "RESET") {
-    state = "idle";
-    time_left = 60;
-    score = 0;
-  } else if (command == "SELECT_LEVEL") {
-    level = newLevel;
-  }
-  Serial.println(command);
-  server.send(200, "application/json", "{\"ok\":true}");
-}
-*/
 
 void handleCommand() {
   StaticJsonDocument<200> doc;
@@ -104,21 +69,10 @@ void setup() {
   // UART0 para el Monitor Serial de la PC (Debug)
   Serial.begin(115200); // RX y TX --> EDU-CIAA
   Serial1.begin(115200); // solo RX --> DEBUG
-  //Serial1.swap();
- // Serial.println("\nMonitor de Debug (UART0) iniciado.");
-
-  // UART1 para la comunicación con la CIAA (TX en D4/GPIO2)
-  //Serial1.begin(115200);
-  //Serial.println("Comunicacion CIAA (UART1) iniciada en D4 (GPIO2).");
+ 
   WiFi.softAP("ESP8266-Juego", "clave123"); // SSID y contraseña
   IPAddress ip = WiFi.softAPIP();
   Serial1.println("Access Point IP: " + ip.toString());
-  
-
- /* while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
 
   Serial.println("\nConectado. IP: " + WiFi.localIP().toString());*/
 
@@ -134,7 +88,7 @@ void loop() {
   // Lógica para recibir el estado del juego de la CIAA
   if (Serial.available()) {
     String input = Serial.readStringUntil('\n');
-    //Serial.println(input);
+    
     // El protocolo es STATUS:SCORE,TIME,STATE,LEVEL\r\n
     if (input.startsWith("STATUS:")) {
       String payload = input.substring(7); // Quitar "STATUS:"

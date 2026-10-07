@@ -11,10 +11,10 @@
 
 // --- PROTOTIPOS PÚBLICOS ---
 
-// Inicializa el driver en una UART espec�fica
+// Inicializa el driver en una UART específica
 void ESP_Driver_Init(uartMap_t uart, uint32_t baudrate);
 
-// Env�a el paquete de estado al ESP
+// Envía el paquete de estado al ESP
 void ESP_Driver_SendStatus(uint16_t score, uint8_t time, GameState_t state, uint8_t level);
 
 // Revisa si hay un comando completo y válido en el buffer de la UART.

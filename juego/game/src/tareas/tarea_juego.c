@@ -25,7 +25,7 @@ void Juego_Init(void)
     contexto.tiempo_restante = MAX_TIEMPO_PARTIDA;
 }
 
-/* Env�o de eventos desde tareas  */
+/* Envío de eventos desde tareas  */
 void Juego_EnviarEvento(GameEventType_t tipo, uint8_t val)
 {
     GameEvent_t evento = { .tipo = tipo, .valor = val };

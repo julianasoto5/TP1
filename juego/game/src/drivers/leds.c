@@ -4,7 +4,6 @@ void lucesInit(){
    gpioWrite(LED_PIN, OFF);
 }
 
-
 void lucesIDLE(){
    gpioWrite(LED_PIN, ON);
 }

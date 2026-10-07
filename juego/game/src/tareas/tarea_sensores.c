@@ -7,7 +7,7 @@
 extern QueueHandle_t xColaJuego;
 extern TaskHandle_t xMatrizLDRHandler, xServoHandler, xJuegoHandler, xComunicationHandler, xFeedbackHandler;
 
-void tarea_sensores(void * prm){ //prioridad media? 2/3 
+void tarea_sensores(void * prm){ //prioridad media: 2/3 
    const TickType_t xDelay50ms = pdMS_TO_TICKS( 50 );    
    TickType_t xLastWakeTime = xTaskGetTickCount(); //esto garantiza que se despierte cada 10ms porque sino depende de cuando llame a vTaskDelay
       

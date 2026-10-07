@@ -10,28 +10,28 @@
 #include "servo.h"
 /*=====[Constantes de la Tarea de Movimiento]================================*/
 
-// Constantes de Movimiento F·cil (PatrÛn de una direcciÛn)
-#define PASO_FACIL 1           // Cu·ntos grados mover en cada iteraciÛn
+// Constantes de Movimiento F√°cil (Patr√≥n de una direcci√≥n)
+#define PASO_FACIL 1           // Cu√°ntos grados mover en cada iteraci√≥n
 #define RETARDO_FACIL_MS 80    // Retardo entre pasos para velocidad constante (en ms)
 
-// Constantes de Movimiento DifÌcil (PatrÛn Cuadrado/Rombo)
+// Constantes de Movimiento Dif√≠cil (Patr√≥n Cuadrado/Rombo)
 // --- AJUSTES PARA FLUIDEZ Y CONCURRENCIA ---
 #define BASE_STEP_SIZE 1                     
 #define PASO_DIVISOR_FLUIDEZ 40              // Divisor para calcular el retardo del paso
-#define MIN_PASO_RETARDO_MS 2                // MÌnimo absoluto para la pausa interna.
+#define MIN_PASO_RETARDO_MS 2                // M√≠nimo absoluto para la pausa interna.
 // ------------------------------------------
 
 #define RETARDO_DIFICIL_MS_INICIAL 1200      // Retardo inicial (lento) en ms (Tiempo total del movimiento)
-#define ACELERACION_REDUCCION_MS 20          // Cantidad de ms a reducir en cada ciclo (aceleraciÛn)
-#define RETARDO_MIN_DIFICIL_MS 600           // Retardo mÌnimo absoluto (velocidad m·xima del juego)
+#define ACELERACION_REDUCCION_MS 20          // Cantidad de ms a reducir en cada ciclo (aceleraci√≥n)
+#define RETARDO_MIN_DIFICIL_MS 600           // Retardo m√≠nimo absoluto (velocidad m√°xima del juego)
 
 typedef enum {
-    M_ESQUINA_1_SUP_IZQ, // MÌnimo X, M·ximo Y
-    M_ESQUINA_2_INF_IZQ, // MÌnimo X, MÌnimo Y
-    M_ESQUINA_3_INF_DER, // M·ximo X, MÌnimo Y
-    M_ESQUINA_4_SUP_DER  // M·ximo X, M·ximo Y
+    M_ESQUINA_1_SUP_IZQ, // M√≠nimo X, M√°ximo Y
+    M_ESQUINA_2_INF_IZQ, // M√≠nimo X, M√≠nimo Y
+    M_ESQUINA_3_INF_DER, // M√°ximo X, M√≠nimo Y
+    M_ESQUINA_4_SUP_DER  // M√°ximo X, M√°ximo Y
 } MovimientoFase_t;
-/*=====[Prototipos de funciones p˙blicas]=====================================*/
+/*=====[Prototipos de funciones p√∫blicas]=====================================*/
 
 void tarea_movimiento(void *pvParameters);
 

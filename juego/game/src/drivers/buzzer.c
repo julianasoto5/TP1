@@ -11,9 +11,9 @@
 #include "math.h"
 
 /*
-   No es posible usar la librería "sapi_pwm" porque la misma solo permite
+   No es posible usar la librerÃ­a "sapi_pwm" porque la misma solo permite
    modificar el ciclo de trabajo, y en este caso es necesario cambiar la 
-   frecuencia de la señal. En consecuencia, la señal PWM se realizó 
+   frecuencia de la seÃ±al. En consecuencia, la seal PWM se realiz 
    manipulando directamente el SCT (State Configurable Timer) a partir de 
    la libreria "sapi_sct".
    
@@ -51,19 +51,12 @@
 #define T_MEDIO T_CORTO*2
 #define T_LARGO T_CORTO*3 
 
-/*
-   
-
-*/
-
-
 
 Nota_t mario_intro[] = {
   {NOTE_E5, T_CORTO}, {NOTE_E5, T_CORTO}, {SILENCE, T_CORTO}, {NOTE_E5, T_CORTO},
   {SILENCE, T_CORTO}, {NOTE_C5, T_CORTO}, {NOTE_E5, T_CORTO}, {SILENCE, T_CORTO},
   {NOTE_G5, T_CORTO}, {SILENCE, T_LARGO},
 };
-
 
 
 Nota_t melody_winner[] = {
@@ -123,8 +116,6 @@ Nota_t melody4[] = {
     {SILENCE, 60},
     {NOTE_C4, 300}, {NOTE_G3, 400}
 };
-
-
 
 
 void buzzerSetFrequency(uint32_t freq){

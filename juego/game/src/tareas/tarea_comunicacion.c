@@ -12,7 +12,7 @@ extern TaskHandle_t xComunicationHandler;
 extern TaskHandle_t xJuegoHandler;
 
 // El estado sombra se queda en la tarea, ya que es
-// parte de la l�gica de la tarea (recordar estado).
+// parte de la lógica de la tarea (recordar estado).
 static uint16_t local_score = 0;
 static uint16_t  local_time = MAX_TIEMPO_PARTIDA/100;
 static uint8_t  local_level = NIVEL_FACIL;
@@ -46,9 +46,9 @@ void tarea_comunicacion(void *pvParameters) {
       gpioWrite(LEDR, OFF);
       gpioWrite(LEDB, OFF);
       ulTaskNotifyTake(pdFALSE, portMAX_DELAY);
-        // 1. REVISAR COLA DE JUEGO (CIAA -> ESP)
+        // 1. REVISA COLA DE JUEGO (CIAA -> ESP)
         if (xQueueReceive(xColaComunicacion, &evento, 0) == pdPASS) {
-            // Actualizar el estado sombra
+            // Actualiza el estado sombra
             switch (evento.tipo) {
                 case START_GAME: 
                     local_state = STATE_PLAYING;
@@ -74,13 +74,13 @@ void tarea_comunicacion(void *pvParameters) {
                     break;
             }
             
-            // Enviar estado actualizado al driver
+            // Envía el estado actualizado al driver
            // printf("[COMUNICACION] Local time: %d\r\n",local_time);
             ESP_Driver_SendStatus(local_score, local_time, local_state, local_level);
             //xTaskNotifyGive(xJuegoHandler);
         }
 
-        // 2. REVISAR UART (ESP -> CIAA)
+        // 2. REVISA la UART (ESP -> CIAA)
         // El driver nos dice si tiene un comando listo
         char c;
         
@@ -94,7 +94,7 @@ void tarea_comunicacion(void *pvParameters) {
         }
         
         
-        // Ceder el CPU - Lo comento porque si cede CPU no lee bien comandos 
+        // Cede la CPU - (si cede CPU no lee bien comandos) 
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }

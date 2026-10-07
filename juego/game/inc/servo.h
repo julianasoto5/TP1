@@ -12,21 +12,18 @@
 #include "stdlib.h"
 #include "task.h" // Incluir si se usa vTaskDelay dentro del driver, o si se maneja desde la tarea
 
-// Definiciones de Pines y Ángulos 
+// Definiciones de Pines y Ã¡ngulos 
 #define ANGULO_MIN_GRADOSX 80
 #define ANGULO_MAX_GRADOSX 120
 #define ANGULO_MIN_GRADOSY 70
 #define ANGULO_MAX_GRADOSY 130
 #define POS_INICIAL_GRADOS 95
-
 #define POS_INICIAL_GRADOSY 100
 
 
 // Pines del Hardware
 #define SERVO1_PIN SERVO8 //GPIO2
 #define SERVO2_PIN SERVO4 //GPIO8 
-
-
 
 
 // Funciones de control de la diana

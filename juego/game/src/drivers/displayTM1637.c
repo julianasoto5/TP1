@@ -6,8 +6,8 @@
 #define TM1637_I2C_COMM3    0x80
 
 
-/** Mapeo d?gito a segmentos:
-Cada byte representa qu? segmentos encender para cada d?gito (0-F).
+/** Mapeo dígito a segmentos:
+Cada byte representa qué segmentos encender para cada dígito (0-F).
       A
      ---
   F |   | B
@@ -107,7 +107,7 @@ void tm1637_init(TM1637Display* display, gpioMap_t pinCLK, gpioMap_t pinDIO, uns
     display->pinCLK = pinCLK;
     display->pinDIO = pinDIO;
     display->bitDelay = bitDelay;
-    display->brightness = 7; // Brillo m?ximo por defecto
+    display->brightness = 7; // Brillo máximo por defecto
     
     gpioConfig(pinCLK, GPIO_INPUT);
     gpioConfig(pinDIO, GPIO_INPUT);
@@ -125,7 +125,7 @@ void tm1637_set_segments(TM1637Display* display, const uint8_t segments[], uint8
     tm1637_write_byte(display, TM1637_I2C_COMM1);
     tm1637_stop(display);
 
-    // Escribir COMM2 + direcci?n
+    // Escribir COMM2 + dirección
     tm1637_start(display);
     tm1637_write_byte(display, TM1637_I2C_COMM2 + (pos & 0x03));
 
@@ -169,7 +169,7 @@ void tm1637_show_number_base_ex(TM1637Display* display, int8_t base, uint16_t nu
         }
         digits[length-1] = tm1637_encode_digit(0);
     } else {
-        // Convertir n?mero a d?gitos
+        // Convertir número a dígitos
         for(int i = length-1; i >= 0; i--) {
             uint8_t digit = num % base;
             
@@ -204,9 +204,9 @@ void tm1637_show_countdown (TM1637Display* display, uint16_t seconds) {
     uint8_t num = minutes*100 + secs;
     tm1637_show_number_dec_ex(display, num, dotsON, true, 4, 0);
     
-    // Cambiar brillo seg?n el tiempo restante
+    // Cambiar brillo según el tiempo restante
     if (seconds <= 10) {
-        // ?ltimos 10 segundos - parpadeo y brillo bajo
+        // Últimos 10 segundos - parpadeo y brillo bajo
         static bool blink = false;
         if (blink) {
             tm1637_set_brightness(display, 7, true);
@@ -215,53 +215,10 @@ void tm1637_show_countdown (TM1637Display* display, uint16_t seconds) {
         }
         blink = !blink;
     } else if (seconds <= 30) {
-        // ?ltimos 30 segundos - brillo medio
+        // Últimos 30 segundos - brillo medio
         tm1637_set_brightness(display, 4, true);
     } else {
         // Tiempo normal - brillo alto
         tm1637_set_brightness(display, 7, true);
     }
 }
-
-/*
-int main( void )
-{  
-   // ----- Setup -----------
-   boardInit();
-   
-   // Inicializar display (ajusta los pines seg?n tu conexi?n)
-   TM1637Display display;
-   tm1637_init(&display, CLK, DIO, 100); // pinCLK=GPIO5, pinDIO=GPIO7
-   tm1637_set_brightness(&display, 7, true);
-   tm1637_show_number_dec_ex(&display, 0, dotsON, true, 4, 0);
-
-   uint16_t countdown_time = 90; // 1 minuto y medio
-   tick_t last_update = tickRead(); // Chequear que hace
-   bool display_on = true;
-    while(1) {
-       // Calcula cu?nto tiempo ha pasado desde la ?ltima actualizaci?n
-        if (tickRead() - last_update >= 1000 && display_on) { //?Pas? 1 segundo?
-            last_update = tickRead(); //Reinicia el tiempo de referencia
-            
-            if (countdown_time > 0) {
-                countdown_time--;
-                tm1637_show_countdown(&display, countdown_time);
-            } else {
-                // Timer lleg? a cero - hacer parpadear "00:00"
-                static bool blink_state = true;
-                
-                if (blink_state) {
-                    tm1637_show_countdown(&display, 0);
-                } else {
-                    tm1637_clear(&display);
-                }
-                blink_state = !blink_state;
-            }
-        }
-        
-        
-        delay(50);
-    }
-
-    return 0;
-}*/

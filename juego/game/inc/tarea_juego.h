@@ -37,12 +37,12 @@ typedef struct {
 
 
 /* ---- Recursos compartidos ---- */
-extern QueueHandle_t colaJuego;          // recibe eventos desde sensores / comunicación
-extern QueueHandle_t colaFeedback;       // envía señales a LEDs/display
-extern QueueHandle_t colaComunicacion;   // envía datos al módulo WiFi
+extern QueueHandle_t colaJuego;          // recibe eventos desde sensores / comunicaciÃ³n
+extern QueueHandle_t colaFeedback;       // envÃ­a seÃ±ales a LEDs/display
+extern QueueHandle_t colaComunicacion;   // envÃ­a datos al mÃ³dulo WiFi
 extern TaskHandle_t handleMovimiento;    // se usa para notificar inicio/stop
 
-/* ---- Funciones públicas ---- */
+/* ---- Funciones pÃºblicas ---- */
 void Juego_Init(void);
 void Juego_EnviarEvento(GameEventType_t tipo, uint8_t val);
 void tarea_Juego(void *pvParameters);

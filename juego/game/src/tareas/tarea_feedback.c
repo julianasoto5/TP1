@@ -67,7 +67,7 @@ void tarea_feedback(void *pvParameters)
             }
             else if (evento.tipo == TICK_10MS) {
               
-               MostrarTiempoLCD(evento.valor, display); // La tarea juego envía el tiempo en valor
+               MostrarTiempoLCD(evento.valor, display); // La tarea juego envÃ­a el tiempo en valor
             }
            else if (evento.tipo == DISPARO) {
                 lucesDISPARO();        

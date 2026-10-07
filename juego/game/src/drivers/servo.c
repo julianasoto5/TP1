@@ -7,7 +7,7 @@ void Servo_Init() {
    // Configurar Servo
    valor = servoConfig( 0, SERVO_ENABLE ); //inicializa timers
 
-   //agrega el servo a la lista de servos activos - devuelve 0 si no tuvo éxito
+   //Agrega el servo a la lista de servos activos - devuelve 0 si no tuvo Ã©xito
    if (!servoConfig( SERVO1_PIN, SERVO_ENABLE_OUTPUT ))
       printf("No se pudo agregar el servo 1 a la lista de servos activos.\r\n");
 
@@ -21,7 +21,7 @@ void Servo_Init() {
 int16_t Servo_GetPosicion(servoMap_t servo) {
     return (int16_t)servoRead(servo);
 }
-// --- Implementación de Servo_MoverGradual ---
+// --- ImplementaciÃ³n de Servo_MoverGradual ---
 void Servo_MoverGradual(servoMap_t servo, int16_t destino, uint16_t velocidad_ms) {
     int16_t actual = Servo_GetPosicion(servo); 
     int16_t paso_unidades = (destino > actual) ? 1 : -1;
@@ -44,7 +44,7 @@ void Servo_MoverGradual(servoMap_t servo, int16_t destino, uint16_t velocidad_ms
         // Cede la CPU: Esto es lo que hace el movimiento fluido.
         vTaskDelay(RETARDO_PASO_MS); 
         
-        // Chequeo para evitar bucles infinitos por errores de precisión
+        // Chequeo para evitar bucles infinitos por errores de precisiÃ³n
         if ((paso_unidades > 0 && actual >= destino) || (paso_unidades < 0 && actual <= destino)) {
             break;
         }

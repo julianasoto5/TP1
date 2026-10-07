@@ -54,7 +54,6 @@ static const char* EstadoJuegoToString(GameState_t estado) {
 }
 
 
-
 // ----- Funciones Públicas -----
 
 void ESP_Driver_Init(uartMap_t uart, uint32_t baudrate) {

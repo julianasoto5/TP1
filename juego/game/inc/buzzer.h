@@ -1,10 +1,3 @@
-/*=============================================================================
- * Author: JS < >
- * Date: 2025/10/27
- *===========================================================================*/
-
-/*=====[Avoid multiple inclusion - begin]====================================*/
-
 #ifndef __BUZZER_H__
 #define __BUZZER_H__
 
@@ -18,8 +11,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
 
 // Notas musicales (frecuencias en Hz)
 #define NOTE_C3   131
@@ -94,7 +85,7 @@ extern "C" {
 #define BUZZER_PIN CTOUT8//SPI_MISO
 #define CANT_SONIDOS 5
 
-//estructura que tenga nota + duracion?
+//estructura que tenga nota + duracion
 typedef struct{
    uint16_t nota;
    uint16_t duracion;

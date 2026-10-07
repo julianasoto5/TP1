@@ -7,10 +7,10 @@
 #include <stdlib.h> // Necesario para rand() y abs()
 #include "tarea_movimiento.h" // Constantes de movimiento
 
-extern QueueHandle_t xColaMovimiento; // Cola para comunicaci髇 con Tarea Juego
+extern QueueHandle_t xColaMovimiento; // Cola para comunicaci贸n con Tarea Juego
 
-// Variables EST罷ICAS para mantener el estado entre llamadas
-static int8_t s_dir_x = 1;      // Direcci髇: 1 (aumenta), -1 (disminuye)
+// Variables EST脕TICAS para mantener el estado entre llamadas
+static int8_t s_dir_x = 1;      // Direcci贸n: 1 (aumenta), -1 (disminuye)
 static int8_t s_dir_y = 1;
 static int16_t s_pos_x = POS_INICIAL_GRADOS;
 static int16_t s_pos_y = POS_INICIAL_GRADOS;
@@ -23,7 +23,7 @@ level nivel;
 static void PonerDianaPosicionInicial(void) {
     Servo_PonerInicial();
     
-    // Reinicializar el estado de la l骻ica para el pr髕imo juego
+    // Reinicializar el estado de la l贸gica para el pr贸ximo juego
     s_pos_x = POS_INICIAL_GRADOS;
     s_pos_y = POS_INICIAL_GRADOS;
     s_dir_x = 1;
@@ -34,10 +34,10 @@ static void PonerDianaPosicionInicial(void) {
 
 
 static void MoverDianaFacil(void) {
-    // 1. L骻ica: Mover en un solo eje (X)
+    // 1. L贸gica: Mueve en un solo eje (X)
     s_pos_x += PASO_FACIL * s_dir_x;
 
-    // 2. Comprobar l韒ites y cambiar la direcci髇 
+    // 2. Comprueba l铆mites y cambia la direcci贸n 
     if (s_pos_x >= ANGULO_MAX_GRADOSX) {
         s_pos_x = ANGULO_MAX_GRADOSX;
         s_dir_x = -1; 
@@ -46,22 +46,22 @@ static void MoverDianaFacil(void) {
         s_dir_x = 1;  
     }
 
-    // 3. Actuar sobre el driver 
+    // 3. Act煤a sobre el driver 
     Servo_SetPosicionX((uint8_t)s_pos_x);
-    Servo_SetPosicionY(POS_INICIAL_GRADOS); // Y se mantiene fijo
+    Servo_SetPosicionY(POS_INICIAL_GRADOS); //Se mantiene fijo
     
-    // 4. Esperar para velocidad constante
+    // 4. Espera para velocidad constante
     vTaskDelay(pdMS_TO_TICKS(RETARDO_FACIL_MS));
 }
 
 
-// L骻ica para mover la diana en un patr髇 fijo de CUADRADO, progresivamente m醩 r醦ido.
+// L贸gica para mover la diana en un patr贸n fijo de CUADRADO, progresivamente m谩s r谩pido.
 static void MoverDianaDificil(void) {
     
     int16_t destino_x;
     int16_t destino_y;
     
-    // 1. Determinar el nuevo destino basado en la fase actual
+    // 1. Determina el nuevo destino basado en la fase actual
     switch (s_fase_actual) {
         case M_ESQUINA_1_SUP_IZQ: 
             destino_x = ANGULO_MIN_GRADOSX; 
@@ -84,32 +84,32 @@ static void MoverDianaDificil(void) {
             break;
     }
     
-    // 2. Configurar par醡etros de movimiento
+    // 2. Configura par谩metros de movimiento
     int16_t actual_x = s_pos_x;
     int16_t actual_y = s_pos_y;
     
-    // Direcci髇 del paso (+1 o -1)
+    // Direcci贸n del paso (+1 o -1)
     int16_t dir_x = (destino_x > actual_x) ? 1 : -1;
     int16_t dir_y = (destino_y > actual_y) ? 1 : -1;
     
-    // Retardo para la interpolaci髇 (fluidez). Se reduce a medida que el juego acelera.
+    // Retardo para la interpolaci贸n (fluidez). Se reduce a medida que el juego acelera.
     uint16_t retardo_paso_ms = s_retardo_actual_ms / PASO_DIVISOR_FLUIDEZ; 
     
-    // Aseguramos el m韓imo absoluto para el retardo del paso (2ms)
+    // Aseguramos el m铆nimo absoluto para el retardo del paso (2ms)
     if (retardo_paso_ms < MIN_PASO_RETARDO_MS) retardo_paso_ms = MIN_PASO_RETARDO_MS; 
     
-    // 3. Bucle de Movimiento Concurrente (Diagonal fluido con pasos din醡icos)
+    // 3. Bucle de Movimiento Concurrente (Diagonal fluido con pasos din锟絤icos)
     // El bucle sigue mientras no se haya llegado al destino en ambos ejes
     while (actual_x != destino_x || actual_y != destino_y) {
         
-        // --- C醠culo Din醡ico del Paso X ---
+        // --- C谩lculo Din谩mico del Paso X ---
         if (actual_x != destino_x) {
             // Distancia restante a mover en X
             int16_t dist_restante_x = abs(destino_x - actual_x); 
-            // El paso real es el m韓imo entre el paso base (1) y la distancia restante
+            // El paso real es el m铆nimo entre el paso base (1) y la distancia restante
             int16_t paso_abs_x = (dist_restante_x > BASE_STEP_SIZE) ? BASE_STEP_SIZE : dist_restante_x;
             
-            // Mover un paso
+            // Mueve un paso
             actual_x += (dir_x * paso_abs_x); 
             
             // Aseguramos que no sobrepasa el destino
@@ -120,14 +120,14 @@ static void MoverDianaDificil(void) {
         }
 
          vTaskDelay(1); // Espera 1 tick
-        // --- C醠culo Din醡ico del Paso Y ---
+        // --- C谩lculo Din谩mico del Paso Y ---
         if (actual_y != destino_y) {
             // Distancia restante a mover en Y
             int16_t dist_restante_y = abs(destino_y - actual_y);
-            // El paso real es el m韓imo entre el paso base (1) y la distancia restante
+            // El paso real es el m铆nimo entre el paso base (1) y la distancia restante
             int16_t paso_abs_y = (dist_restante_y > BASE_STEP_SIZE) ? BASE_STEP_SIZE : dist_restante_y;
             
-            // Mover un paso
+            // Mueve un paso
             actual_y += (dir_y * paso_abs_y);
             
             // Aseguramos que no sobrepasa el destino
@@ -141,14 +141,14 @@ static void MoverDianaDificil(void) {
         vTaskDelay(pdMS_TO_TICKS(retardo_paso_ms));
     }
     
-    // 4. Actualizar la posici髇 global
+    // 4. Actualizar la posici贸n global
     s_pos_x = destino_x;
     s_pos_y = destino_y;
     
-    // 5. Transici髇 al siguiente estado
+    // 5. Transici贸n al siguiente estado
     s_fase_actual = (s_fase_actual + rand()%4+1) % 4; // Hay 4 fases (M_ESQUINA_1 a M_ESQUINA_4)
     
-    // 6. Aumentar la velocidad progresivamente (Aceleraci髇)
+    // 6. Aumentar la velocidad progresivamente (Aceleraci贸n)
     if (s_retardo_actual_ms > RETARDO_MIN_DIFICIL_MS) {
         s_retardo_actual_ms -= ACELERACION_REDUCCION_MS; 
     } else {
@@ -167,7 +167,7 @@ void tarea_movimiento(void *pvParameters)
     uint8_t dormir=1;
    
 
-    // Bucle principal: Espera por la se馻l de inicio de juego
+    // Bucle principal: Espera por la se帽al de inicio de juego
     while (1) {
         gpioWrite(LED1, OFF);
        gpioWrite(LED2, OFF);

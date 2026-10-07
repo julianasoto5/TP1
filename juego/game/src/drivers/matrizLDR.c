@@ -7,7 +7,7 @@
 
 /*
 Tarea que se ejecuta cada x ms. Almacena los anillos golpeados en la variable 
-anillos_alcanzados,
+anillos_alcanzados
 */
 
 #include "matrizLDR.h"
@@ -40,18 +40,18 @@ uint8_t matrizPinesColumnas[CANT_COLUMNAS] = {
                                     AN_PIN_1,
                                     AN_PIN_2,
                                     AN_PIN_3, 
-                                    AN_PIN_4, //---hijo de puta
+                                    AN_PIN_4, 
                                   };
 /*=====[Definition macros of public constants]===============================*/
 const int anillos[CANT_FILAS][CANT_COLUMNAS] = {{3,2,2,2},
                                                 {1,1,1,1},
                                                 {1,1,1,1},//{1,1},
-                                                }; //todavia no está implementado esto
+                                                }; 
 void matrizLDR_Init( void )
 {
    
    uint8_t pin = 0;    
-   adcConfig(ADC_ENABLE); //habilitacion de columnas analógicas
+   adcConfig(ADC_ENABLE); //habilitacion de columnas analÃ³gicas
    for( pin=0; pin<CANT_FILAS; pin++ ){      
       // Configuro las filas como salida
       gpioInit( matrizPinesFilas[pin], GPIO_OUTPUT );
